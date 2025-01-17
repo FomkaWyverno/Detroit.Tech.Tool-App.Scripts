@@ -20,7 +20,7 @@ body {
   font-weight: 400;
   overflow-x: hidden;
   position: relative;
-  background-color: #2b2b2b;
+  background-color: #ffffff;
 }
 
 main {
@@ -109,13 +109,13 @@ td {
   font-size: 24px;
   font-family: "Play", sans-serif;
   padding: 4px 8px 4px 8px;
-  border: #0057BB 3px solid;
+  border: #e2ecff 3px solid;
   border-radius: 8px;
   transition: box-shadow 0.3s ease;
 }
 .container-search__container-input__input:focus {
   outline: 0;
-  box-shadow: 0px 0px 10px 4px #0057BB;
+  box-shadow: 0px 0px 10px 4px #e2ecff;
 }
 .container-search__container-input__input:hover {
   cursor: url(../images/pointer.png), auto;
@@ -170,7 +170,7 @@ td {
 }
 
 .table-json {
-  color: white;
+  color: #363535;
   font-family: "Play", sans-serif;
   -moz-user-select: text;
   -khtml-user-select: text;
@@ -225,9 +225,9 @@ td {
   font-family: "Play", sans-serif;
   font-weight: 700;
   user-select: none;
-  color: #0057BB;
-  background-color: #fff;
-  border: 2px solid #0057BB;
+  color: #e2ecff;
+  background-color: #2b2b2b;
+  border: 2px solid #e2ecff;
   border-radius: 4px;
   padding: 4px 16px 4px 16px;
 }
@@ -235,7 +235,7 @@ td {
   cursor: url(../images/pointer.png), auto;
   color: #e2ecff;
   background-image: url(../images/btn2.svg);
-  box-shadow: 0px 0px 8px 2px #0057BB;
+  box-shadow: 0px 0px 8px 2px #e2ecff;
 }
 .table-json__head {
   user-select: none;
@@ -261,9 +261,9 @@ td {
   position: absolute;
   display: flex;
   border-radius: 16px;
-  background-color: #2b2b2b;
+  background-color: #ffffff;
   border: 2px solid #575757;
-  color: white;
+  color: #363535;
   max-width: 600px;
   transition: 1s ease;
 }
@@ -279,9 +279,9 @@ td {
 .information-key__button {
   font-weight: 700;
   user-select: none;
-  color: #0057BB;
-  background-color: #fff;
-  border: 2px solid #0057BB;
+  color: #e2ecff;
+  background-color: #2b2b2b;
+  border: 2px solid #e2ecff;
   border-radius: 4px;
   width: 72px;
   height: 36px;
@@ -292,7 +292,7 @@ td {
   cursor: url(../images/pointer.png), auto;
   color: #e2ecff;
   background-image: url(../images/btn2.svg);
-  box-shadow: 0px 0px 8px 2px #0057BB;
+  box-shadow: 0px 0px 8px 2px #e2ecff;
 }
 .information-key__container-input {
   position: relative;
@@ -307,7 +307,7 @@ td {
   font-size: 18px;
   outline: none;
   border: 2px #575757 solid;
-  background-color: #2b2b2b;
+  background-color: #ffffff;
   color: white;
   border-radius: 4px;
 }
@@ -504,7 +504,7 @@ td {
 .container-filter__content {
   position: absolute;
   top: calc(100% + 8px);
-  background-color: #2b2b2b;
+  background-color: #ffffff;
   border: 2px solid #535353;
   border-radius: 8px;
   overflow: hidden;
