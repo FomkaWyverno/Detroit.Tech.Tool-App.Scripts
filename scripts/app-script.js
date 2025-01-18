@@ -75,7 +75,7 @@ class AppScripts {
             if (appScriptIsInit && this.scripts[functionName]) {
                 throw new Error(`Function "${functionName}" is not available in AppScript.`);
             }
-            const messageId = randonString();
+            const messageId = randomString();
             const messageBody = { // Створюємо тіло для повідомлення
                 messageId: messageId,
                 functionName: functionName,
