@@ -8,10 +8,24 @@
 </head>
 <body>
     <button id="send">Send Message</button>
+    <div id="response"></div>
     <script>
-      document.getElementById('send').addEventListener('click', () => {
-        window.parent.postMessage({ text: "Hello from iframe" }, "*");
-      });
+            // Обробник для отримання відповіді від головного вікна
+        window.addEventListener("message", (event) => {
+            // Перевірка джерела повідомлення
+            if (event.origin !== 'https://fomkawyverno.github.io') return;
+
+            // Виведення відповіді або помилки
+            if (event.data.text) {
+            document.getElementById('response').textContent = 'Response: ' + event.data.text;
+            } else if (event.data.error) {
+            document.getElementById('response').textContent = 'Error: ' + event.data.error;
+            }
+        });
+
+        document.getElementById('send').addEventListener('click', () => {
+            window.parent.postMessage({ text: "Hello from iframe" }, "*");
+        });
     </script>
 </body>
 </html>
