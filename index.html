@@ -11,8 +11,16 @@
     <script>
         function onApiLoad() {
             console.log("Load API");
-            google.script.host.ready();
-            google.script.run.forTest("From my iframe")
+            if (google.script.host && google.script.host.ready) {
+                google.script.host.ready();
+            }
+            // Виклик серверної функції
+            if (google.script.run) {
+                google.script.run.forTest("From my iframe");
+            } else {
+                console.error("google.script.run не доступний");
+            }
+
         }
     </script>
     <script src="https://apis.google.com/js/api.js?onload=onApiLoad"></script>
