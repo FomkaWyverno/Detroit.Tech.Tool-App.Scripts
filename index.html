@@ -13,13 +13,14 @@
             // Обробник для отримання відповіді від головного вікна
         window.addEventListener("message", (event) => {
             // Перевірка джерела повідомлення
+            console.log(event.origin)
             if (event.origin !== 'https://fomkawyverno.github.io') return;
 
             // Виведення відповіді або помилки
             if (event.data.text) {
-            document.getElementById('response').textContent = 'Response: ' + event.data.text;
+                document.getElementById('response').textContent = 'Response: ' + event.data.text;
             } else if (event.data.error) {
-            document.getElementById('response').textContent = 'Error: ' + event.data.error;
+                document.getElementById('response').textContent = 'Error: ' + event.data.error;
             }
         });
 
