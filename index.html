@@ -10,61 +10,17 @@
     <button id="send">Send Message</button>
     <input type="text" id="function">
     <div id="response"></div>
+    <script src="/scripts/app-script.js"></script>
     <script>
-        function randonString() {
-          const timePart = Date.now().toString(32); // Поточний час в базі 32
-          const array = new Uint32Array(1); // Масив з одним випадковим числом
-          crypto.getRandomValues(array); // Генерація випадкового числа
-          const randomPart = array[0].toString(16); // Перетворення числа в шістнадцятковий формат
-          return timePart + randomPart; // Об'єднуємо їх для створення унікального рядка
-        }
-
-        const messagedHandlers = new Map()
-
-        // Обробник для отримання відповіді від головного вікна
-        window.addEventListener("message", (event) => {
-            // Перевірка джерела повідомлення
-            console.log(event.origin)
-            if (event.origin !== 'https://n-uywikia63oagjz65bsvspgum75gx225t5vjwibi-0lu-script.googleusercontent.com') return;
-
-            if (event.data.messageId) {
-                const messageHandler = messagedHandlers.get(event.data.messageId);
-                if (messageHandler) {
-                    if (event.data.result) {
-                        messageHandler.resolve(event.data.result)
-                    } else if (event.data.errorMessage) {
-                        messageHandler.reject(event.data.errorMessage) 
-                    } else {
-                        console.error(`Error: function with messageId: ${event.data.messageId}`)
-                    }
-                }
-            } else {
-                console.error(`MESSAGE FROM WINDOW DON'T HAS "MESSAGE ID" event data:\n${event.data}`)
-            }
-        });
-
+        const apps = new AppScripts()
         document.getElementById('send').addEventListener('click', async () => {
-            const messageId = randonString();
-            const functionName = document.getElementById('function').value;
-            const messageBody = {
-                messageId: messageId,
-                functionName: functionName,
-                args: ['Hello from message body']
-            }
+            apps.scripts.forTest('Hello new iframe')
 
-            const promise = new Promise((resolve, reject) => {
-                messagedHandlers.set(messageId, {resolve, reject})
-            })
+            console.log(`Result execution forTest3: ${apps.scripts.forTest3("Iframe param1", "Second param")}`);
 
-            window.parent.postMessage(messageBody, "*");
-
-            try {
-                // Виведення відповіді або помилки
-                let result = await promise;
-                document.getElementById('response').textContent = 'Response: ' + result;
-            } catch (error) {
-                document.getElementById('response').textContent = 'Error: ' + error.message;
-            }
+            let functionsScripts = apps.scripts.listFunctions();
+            console.log('Function in AppScript:')
+            console.log(functionsScripts)
         });
     </script>
 </body>
