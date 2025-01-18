@@ -1,4 +1,10 @@
-google.script.run.forTest("From my code");
+function onApiLoad() {
+    google.script.host.ready(); // Повідомляє, що клієнт готовий.
+    console.log("Google Apps Script API loaded");
+    google.script.run.forTest("From my code");
+}
+
+//google.script.run.forTest("From my code");
 const loaderBlock = document.querySelector('.container-loader');
 
 const searchBlock = document.querySelector('.container-search');
