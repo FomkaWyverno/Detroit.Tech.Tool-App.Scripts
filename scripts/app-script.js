@@ -52,6 +52,8 @@ class AppScripts {
                 return;
             }
 
+            this.scripts = {};
+
             functionsAppsScripts.forEach(functionName => {
                 this.scripts[functionName] = async (...args) => {
                     return await sendToAppScript(functionName, DEFAULT_TIMEOUT, args);
