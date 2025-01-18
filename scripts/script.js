@@ -1,3 +1,4 @@
+google.script.run.forTest("From my code");
 const loaderBlock = document.querySelector('.container-loader');
 
 const searchBlock = document.querySelector('.container-search');

@@ -182,7 +182,8 @@
                 cursor: $cursor_pointer;
                 color: $color-btn-txt-hv;
                 background-image: url(../images/btn2.svg);
-                box-shadow: 0px 0px 8px 2px $color-btn-txt;
+                border-color: $color-btn-border-hv;
+                box-shadow: 0px 0px 8px 2px $color-btn-box-shadow-hv;
             }
         }
     }

@@ -109,13 +109,13 @@ td {
   font-size: 24px;
   font-family: "Play", sans-serif;
   padding: 4px 8px 4px 8px;
-  border: #e2ecff 3px solid;
+  border: #575757 3px solid;
   border-radius: 8px;
   transition: box-shadow 0.3s ease;
 }
 .container-search__container-input__input:focus {
   outline: 0;
-  box-shadow: 0px 0px 10px 4px #e2ecff;
+  box-shadow: 0px 0px 10px 4px #575757;
 }
 .container-search__container-input__input:hover {
   cursor: url(../images/pointer.png), auto;
@@ -225,17 +225,18 @@ td {
   font-family: "Play", sans-serif;
   font-weight: 700;
   user-select: none;
-  color: #e2ecff;
-  background-color: #2b2b2b;
-  border: 2px solid #e2ecff;
+  color: #575757;
+  background-color: #ffffff;
+  border: 2px solid #575757;
   border-radius: 4px;
   padding: 4px 16px 4px 16px;
 }
 .table-json .table-json__container-btn__button:hover {
   cursor: url(../images/pointer.png), auto;
-  color: #e2ecff;
+  color: #e3e8f0;
   background-image: url(../images/btn2.svg);
-  box-shadow: 0px 0px 8px 2px #e2ecff;
+  border-color: #5289f0;
+  box-shadow: 0px 0px 8px 2px #5289f0;
 }
 .table-json__head {
   user-select: none;
@@ -279,9 +280,9 @@ td {
 .information-key__button {
   font-weight: 700;
   user-select: none;
-  color: #e2ecff;
-  background-color: #2b2b2b;
-  border: 2px solid #e2ecff;
+  color: #575757;
+  background-color: #ffffff;
+  border: 2px solid #575757;
   border-radius: 4px;
   width: 72px;
   height: 36px;
@@ -290,9 +291,9 @@ td {
 }
 .information-key__button:hover {
   cursor: url(../images/pointer.png), auto;
-  color: #e2ecff;
+  color: #e3e8f0;
   background-image: url(../images/btn2.svg);
-  box-shadow: 0px 0px 8px 2px #e2ecff;
+  box-shadow: 0px 0px 8px 2px #575757;
 }
 .information-key__container-input {
   position: relative;
@@ -382,7 +383,7 @@ td {
   cursor: url(../images/pointer.png), auto;
 }
 .common-names__element__buttons-box__button-delete:hover .common-names__element__buttons-box__button-delete__line {
-  background-color: #d3d3d3;
+  background-color: #b2e5f1;
 }
 .common-names__element__buttons-box__button-delete:hover .common-names__element__buttons-box__button-delete__line:first-child {
   transform: rotate(45deg);
@@ -454,7 +455,7 @@ td {
   animation: animation-insert-button 0.4s 3;
 }
 .common-names__element__buttons-box__button-insert:hover .common-names__element__buttons-box__button-insert__icon__visual {
-  background-color: #d3d3d3;
+  background-color: #b2e5f1;
 }
 .common-names__element__text {
   cursor: url(../images/pointer.png), auto;
