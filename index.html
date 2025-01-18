@@ -13,12 +13,12 @@
     <script src="./scripts/app-script.js"></script>
     <script>
         const apps = new AppScripts()
-        document.getElementById('send').addEventListener('click', () => {
-            apps.scripts.forTest('Hello new iframe')
+        document.getElementById('send').addEventListener('click', async () => {
+            await apps.scripts.forTest('Hello new iframe')
 
-            console.log(`Result execution forTest3: ${apps.scripts.forTest3("Iframe param1", "Second param")}`);
+            console.log(`Result execution forTest3: ${await apps.scripts.forTest3("Iframe param1", "Second param")}`);
 
-            let functionsScripts = apps.scripts.listFunctions();
+            let functionsScripts = await apps.scripts.listFunctions();
             console.log('Function in AppScript:')
             console.log(functionsScripts)
         });
