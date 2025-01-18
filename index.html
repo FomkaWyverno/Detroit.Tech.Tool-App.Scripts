@@ -1,117 +1,19 @@
 <!DOCTYPE html>
-<html lang="ua">
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="images/icon.png">
-    <title>DetroitTechTool</title>
+    <title>Detroit Localisation Tool</title>
+    <base target="_top">
 </head>
-
 <body>
-    <div class="container-loader">
-        <span class="container-loader__loader"></span>
-        <span class="container-loader__load-text">Loading JSON...</span>
-    </div>
-
-    <div class="container-search hide">
-        <div class="container-search__container-input">
-            <div class="container-filter">
-                <button class="container-filter__button">
-                    <svg height="1792" viewBox="0 0 1792 1792" width="1792" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1595 295q17 41-14 70l-493 493v742q0 42-39 59-13 5-25 5-27 0-45-19l-256-256q-19-19-19-45v-486l-493-493q-31-29-14-70 17-39 59-39h1280q42 0 59 39z"/>
-                    </svg>
-                </button>
-                <div class="container-filter__content hide-content">
-                    <div class="container-filter__content__select">
-                        <input class="container-filter__content__select__radio" type="radio" name="filter" checked id="filter-contains">
-                        <label class="container-filter__content__select__label" for="filter-contains">Рядок містить</label>
-                        <input class="container-filter__content__select__radio" type="radio" name="filter" id="filter-start">
-                        <label class="container-filter__content__select__label" for="filter-start">Рядок починається з</label>
-                        <input class="container-filter__content__select__radio" type="radio" name="filter" id="filter-end">
-                        <label class="container-filter__content__select__label" for="filter-end">Рядок закінчується на</label>
-                        <input class="container-filter__content__select__radio" type="radio" name="filter" id="filter-equals">
-                        <label class="container-filter__content__select__label" for="filter-equals">Рядок такий-же</label>
-                    </div>
-                </div>
-            </div>
-            <input class="container-search__container-input__input" type="text" name="detroit-text" id="detroit-text"
-                autocomplete="off">
-            <span class="container-search__container-input__led-spinner"></span>
-            <button class="container-search__container-input__previousPage tableButton"><svg
-                    xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="512" height="512">
-                    <path
-                        d="M12,24a1.493,1.493,0,0,1-1.06-.439L3.264,15.889a5.5,5.5,0,0,1,0-7.778L10.936.439a1.5,1.5,0,1,1,2.121,2.122L5.385,10.232a2.5,2.5,0,0,0,0,3.536l7.672,7.671A1.5,1.5,0,0,1,12,24Z" />
-                    <path
-                        d="M21.542,24a1.5,1.5,0,0,1-1.061-.439L11.4,14.475a3.505,3.505,0,0,1,0-4.95L20.481.439A1.5,1.5,0,0,1,22.6,2.561l-9.086,9.085a.5.5,0,0,0,0,.708L22.6,21.439A1.5,1.5,0,0,1,21.542,24Z" />
-                </svg></button>
-            <button class="container-search__container-input__nextPage tableButton"><svg
-                    xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="512" height="512">
-                    <path
-                        d="M12,24a1.493,1.493,0,0,1-1.06-.439L3.264,15.889a5.5,5.5,0,0,1,0-7.778L10.936.439a1.5,1.5,0,1,1,2.121,2.122L5.385,10.232a2.5,2.5,0,0,0,0,3.536l7.672,7.671A1.5,1.5,0,0,1,12,24Z" />
-                    <path
-                        d="M21.542,24a1.5,1.5,0,0,1-1.061-.439L11.4,14.475a3.505,3.505,0,0,1,0-4.95L20.481.439A1.5,1.5,0,0,1,22.6,2.561l-9.086,9.085a.5.5,0,0,0,0,.708L22.6,21.439A1.5,1.5,0,0,1,21.542,24Z" />
-                </svg></button>
-            <div class="container-search__container-input__counter">
-                <span>Page: </span><span><span class="container-search__container-input__counter__page"></span>
-            </div>
-        </div>
-        <div class="container-search__table-container">
-            <table class="table-json">
-                <thead>
-                    <tr>
-                        <th class="table-json__code table-json__head" id="table-json__head--code" scope="col">Code</th>
-                        <th class="table-json__container-id table-json__head" scope="col">ContainerID</th>
-                        <th class="table-json__key table-json__head" id="table-json__head--key" scope="col">Key</th>
-                        <th class="table-json__game-text table-json__head table-json__head__select" id="table-json__head--text" scope="col">Game-Text</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="containter-additinal behindScreen-bottom">
-            <div class="information-key">
-                <h3>Додаткова інформація</h3>
-                <div class="information-key__container-input" id="container-actor-input">
-                    <label for="actor-input" class="information-key__container-input__label">Актор</label>
-                    <input type="text" autocomplete="off" name="actor-input" id="actor-input" class="information-key__container-input__input">
-                </div>
-                <div class="information-key__container-input">
-                    <label for="context-input" class="information-key__container-input__label">Контекст</label>
-                    <input type="text" name="context-input" id="context-input" autocomplete="off"
-                        class="information-key__container-input__input">
-                </div>
-                <div class="information-key__container-input">
-                    <label for="timing-input" class="information-key__container-input__label">Таймінг</label>
-                    <input type="text" name="timing-input" id="timing-input" autocomplete="off"
-                        class="information-key__container-input__input">
-                </div>
-                <button class="information-key__button">Copy</button>
-            </div>
-            <div class="common-names">
-                <h3>Словник імен</h3>
-                <span class="common-names__code">Код персонажа:
-                    <span class="common-names__characters"></span>
-                </span>
-                <ul class="common-names__list">
-                </ul>
-            </div>
-        </div>
-    </div>
-    <audio id="selectSound" src="audio/select.ogg"></audio>
-    <audio id="openSound" src="audio/open.ogg"></audio>
+    Running
+    <script>
+        function onApiLoad() {
+            console.log("Load API");
+            google.script.run.forTest("From my iframe")
+        }
+    </script>
     <script src="https://apis.google.com/js/api.js?onload=onApiLoad"></script>
-    <script src="scripts/detroit-json.js"></script>
-    <script src="scripts/KeyTranslate.js"></script>
-    <script src="scripts/Pages.js"></script>
-    <script src="scripts/parseToTable.js"></script>
-    <script src="scripts/script.js"></script>
-    <script src="scripts/sound.js"></script>
 </body>
 </html>
