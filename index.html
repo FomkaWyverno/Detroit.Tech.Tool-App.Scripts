@@ -13,7 +13,7 @@
     <script src="./scripts/app-script.js"></script>
     <script>
         const apps = new AppScripts()
-        document.getElementById('send').addEventListener('click', async () => {
+        document.getElementById('send').addEventListener('click', () => {
             apps.scripts.forTest('Hello new iframe')
 
             console.log(`Result execution forTest3: ${apps.scripts.forTest3("Iframe param1", "Second param")}`);
