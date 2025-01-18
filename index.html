@@ -7,22 +7,11 @@
     <base target="_top">
 </head>
 <body>
-    Running
+    <button id="send">Send Message</button>
     <script>
-        function onApiLoad() {
-            console.log("Load API");
-            if (google.script.host && google.script.host.ready) {
-                google.script.host.ready();
-            }
-            // Виклик серверної функції
-            if (google.script.run) {
-                google.script.run.forTest("From my iframe");
-            } else {
-                console.error("google.script.run не доступний");
-            }
-
-        }
+      document.getElementById('send').addEventListener('click', () => {
+        window.parent.postMessage({ text: "Hello from iframe" }, "*");
+      });
     </script>
-    <script src="https://apis.google.com/js/api.js?onload=onApiLoad"></script>
 </body>
 </html>
