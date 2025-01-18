@@ -74,7 +74,7 @@ class AppScripts {
         }
 
         const sendToAppScript = (functionName, timeout, ...args) => { // Надсилаємо запит на виконання функції у AppScript
-            if (appScriptIsInit && this.scripts[functionName]) {
+            if (appScriptIsInit && !this.scripts[functionName]) {
                 throw new Error(`Function "${functionName}" is not available in AppScript.`);
             }
             const messageId = randomString();
