@@ -11,6 +11,7 @@
     <script>
         function onApiLoad() {
             console.log("Load API");
+            google.script.host.ready();
             google.script.run.forTest("From my iframe")
         }
     </script>
