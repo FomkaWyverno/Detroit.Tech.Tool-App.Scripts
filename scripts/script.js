@@ -9,10 +9,21 @@ async function initializeTool() {
     try {
         loader_state.textContent = 'Завантажуємо ключі...'
         const key_json = await fetchDetroitKeys();
+        loader_state.textContent = 'Обробляємо ключі...'
+        const keys = await parseJsonToArrayKey(key_json, (current_progress, count_id) => {loader_state.textContent = `Обробляємо ключі! Оброблено: ${current_progress} з ${count_id}`;});
         loader_state.textContent = 'Ініцілізація з App Scripts...'
         const appScripts = await AppScripts.getInstance();
-        loader_state.textContent = 'Обробляємо ключі...'
-        const keys = parseJsonToArrayKey(key_json);
+        loader_state.textContent = 'Отримуємо всі створенні аркуші в Google Sheets'
+        const googleSheets = await appScripts.scripts.getSheetNames();
+        
+
+        for (let i = 0; i < googleSheets.length; i++) {
+            const sheet = googleSheets[i];
+            loader_state.textContent = `Отримуємо значення з ${sheet}. Всього отримано ${i} з ${googleSheets.length}`;
+            const values = await appScripts.withTimeout(60000).scripts.getValueSheet(sheet);
+            console.log('Sheet: ' + sheet);
+            console.log(values)
+        }
         return {keys: keys, app: appScripts}
     } catch(error) {
         loader_state.textContent = "Сталась помилка при завантаженні:";
@@ -23,15 +34,6 @@ async function initializeTool() {
         loader_state.appendChild(error_text);
         throw error;
     }
-}
-
-function parseJsonToArrayKey(json) { // Парсить JSON який містить ключі локалізації Детрайта в массив ключів
-    const array = new Array();
-    Object.keys(json).forEach(id => {
-        Object.keys(json[id]).forEach(key => {
-            array.push(new KeyTranslate(id, key, json[id][key].text, json[id][key].hasLink && json[id][key].linkExists))
-        })
-    });
 }
 
 function showTool() { // Відображає інструмент

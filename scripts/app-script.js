@@ -10,7 +10,7 @@ class AppScripts {
         }
         AppScripts.instance = new AppScripts();
 
-        const DEFAULT_TIMEOUT = 5000;
+        const DEFAULT_TIMEOUT = 30000;
         const APP_SCRIPT_ORIGIN = 'https://n-uywikia63oagjz65bsvspgum75gx225t5vjwibi-0lu-script.googleusercontent.com';
 
         const randomString = () => {
@@ -31,9 +31,9 @@ class AppScripts {
                 if (event.data.messageId) { // Перевіряємо чи існує у повідомленні messageId
                     const messageHandler = messagedHandlers.get(event.data.messageId); // Беремо обробник повідомлення
                     if (messageHandler) { // Перевіряємо чи існує обробник повідомлення
-                        if (event.data.result) { // Якщо прийшов результат виконання
+                        if (event.data.result !== undefined) { // Якщо прийшов результат виконання
                             messageHandler.resolve(event.data.result) // Повертаємо результат
-                        } else if (event.data.errorMessage) { // Якщо прийшла помилка
+                        } else if (event.data.errorMessage !== undefined) { // Якщо прийшла помилка
                             messageHandler.reject(event.data.errorMessage)  // Повертаємо помилку
                         } else { // Якщо не немає ні результата, та немає помилки виконання, щось не так на боці АппСкрипт
                             console.error(`Error: Callback from AppScript don't have result or errorMessage -`)
@@ -42,8 +42,9 @@ class AppScripts {
                         messagedHandlers.delete(event.data.messageId);
                     }
                 } else { // Якщо не існує message ID то щось пішло не так з AppScript
-                    console.error(`MESSAGE FROM WINDOW DON'T HAS "MESSAGE ID" event data:`)
+                    const errorMessage = `MESSAGE FROM WINDOW DON'T HAS "MESSAGE ID`;
                     console.error(event.data)
+                    throw new Error(errorMessage, event.data)
                 }});
             const functionsAppsScripts = await sendToAppScript('listFunctions', DEFAULT_TIMEOUT) // Отримуємо всі функції у AppScripts
                 .catch(error => {
@@ -60,18 +61,24 @@ class AppScripts {
 
             functionsAppsScripts.forEach(functionName => {
                 AppScripts.instance.scripts[functionName] = async (...args) => {
-                    return await sendToAppScript(functionName, DEFAULT_TIMEOUT, args);
+                    return sendToAppScript(functionName, DEFAULT_TIMEOUT, args)
+                                .catch(error => {
+                                    throw new Error('Exception on AppScript side: ' + error);
+                                });
                 }
             });
 
             AppScripts.instance.withTimeout = (timeout) => {
-                return {
-                    scripts: { ...functionsAppsScripts.map(functionName => {
-                        return async (...args) => {
-                            return await sendToAppScript(functionName, timeout, args);
-                        }
-                    })}
-                }
+                const proxyApp = {scripts: {}}
+                functionsAppsScripts.forEach(functionName => {
+                    proxyApp.scripts[functionName] = async (...args) => {
+                        return sendToAppScript(functionName, timeout, args)
+                                    .catch(error => {
+                                        throw new Error('Exception on AppScript side: ' + error);
+                                    });
+                    }
+                })
+                return proxyApp;
             }
 
             AppScripts.instance.appScriptIsInit = true
