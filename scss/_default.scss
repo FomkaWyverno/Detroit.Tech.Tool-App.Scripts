@@ -12,6 +12,11 @@ html {
     cursor: $cursor_default;
 }
 
+::selection {
+    background-color: #eca9e9;
+    color: #fff;
+}
+
 html,body {
     height: 100%;
     overflow: hidden;
@@ -27,7 +32,7 @@ body {
     font-weight: 400;
     overflow-x: hidden;
     position: relative;
-    background-color: $color-background;
+    background-color: black;
 }
 
 main {

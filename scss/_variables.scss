@@ -1,13 +1,32 @@
 $cursor_default: url(../images/cursor.png), auto;
 $cursor_pointer: url(../images/pointer.png), auto;
 
-$color-text: #363535;
-$color-btn-bg: #ffffff;
-$color-btn-txt: #575757;
-$color-btn-border-hv: #5289f0;
-$color-btn-box-shadow-hv: #5289f0;
-$color-btn-txt-hv: #e3e8f0;
+$color-scroll-background: #C7C7C7;
+$color-scroll-button: #A0A0A0;
+$color-scroll-button-hover: #777474;
+
+$card-padding: 15px;
+$color-card-background: #FAF7FF;
+$color-card-text: #373636;
+
 $color-background: #ffffff;
-$color-border-backrgound: #575757;
-$color-button-common-names: #575757;
-$color-button-common-names-hv: #b2e5f1 
+
+$color-input: #A4A4A4;
+$color-input-border: #A4A4A4;
+$color-input-label: #828282;
+
+$color-input-border-linear-gradient-left: #53eed4;
+$color-input-border-linear-gradient-right: #ffffff;
+
+$color-key-info-text-has-in-sheet: #fff;
+$color-key-info-text-background-has-in-sheet-yes: #F42424;
+$color-key-info-text-background-has-in-sheet-no: #65FBD2;
+
+$color-controling-first-warpper-border-bottom: #DDD7D7;
+$color-controling-background-button-add: #05C19C;
+$color-controling-background-button-add-hover: #0b7a64;
+$color-controling-background-button-search: #67D6FF;
+$color-controling-background-button-search-hover: #35bdee;
+$color-controling-button-text: #fff;
+
+$color-controling-glossary-text: #515151;

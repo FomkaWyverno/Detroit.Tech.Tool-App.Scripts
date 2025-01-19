@@ -1,11 +1,14 @@
 @import "variables";
 @import "default";
-@import "first-loader";
-@import "search";
-@import "additinal-container";
-@import "information-key";
-@import "common-names";
-@import "filter";
+@import "window";
+@import "loading";
+@import "tool_container";
+@import "youtube_container";
+@import "inputs_container";
+@import "card";
+@import "key_info";
+@import "scrollbar";
+@import "controling";
 
 .hide {
     display: none;
