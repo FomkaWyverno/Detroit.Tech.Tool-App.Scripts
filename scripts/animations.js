@@ -1,7 +1,7 @@
 const block_text = document.querySelector('.key_info_container');
 const wrapper_text = document.querySelector('.key_info_container__wrapper')
 
-function updateHeight() {
+function updateHeightKeyInfo() {
     const computedStyle = window.getComputedStyle(block_text);
     const paddingTop = parseFloat(computedStyle.paddingTop)
     const paddingBottom = parseFloat(computedStyle.paddingBottom)
@@ -19,7 +19,7 @@ function updateHeight() {
 }
 
 const observer = new MutationObserver(() => {
-    updateHeight();
+    updateHeightKeyInfo();
 })
 
 observer.observe(wrapper_text, {

@@ -1,13 +1,17 @@
 class AppScripts {
     constructor() {
+        this.appScriptIsInit = false;
+        this.scripts = {};
+    }
+
+    static async getInstance() {
         if (AppScripts.instance) {
             return Apps.instance;
         }
-        AppScripts.instance = this;
+        AppScripts.instance = new AppScripts();
 
-        let appScriptIsInit = false
         const DEFAULT_TIMEOUT = 5000;
-        const APP_SCRIPT_ORIGIN = 'https://n-uywikia63oagjz65bsvspgum75gx225t5vjwibi-0lu-script.googleusercontent.com'
+        const APP_SCRIPT_ORIGIN = 'https://n-uywikia63oagjz65bsvspgum75gx225t5vjwibi-0lu-script.googleusercontent.com';
 
         const randomString = () => {
             const timePart = Date.now().toString(32); // Поточний час в базі 32
@@ -41,10 +45,10 @@ class AppScripts {
                     console.error(`MESSAGE FROM WINDOW DON'T HAS "MESSAGE ID" event data:`)
                     console.error(event.data)
                 }});
-            const functionsAppsScripts = await sendToAppScript('listFunctions', DEFAULT_TIMEOUT)
+            const functionsAppsScripts = await sendToAppScript('listFunctions', DEFAULT_TIMEOUT) // Отримуємо всі функції у AppScripts
                 .catch(error => {
-                    console.error('Failed to initialize scripts:', error)
-                    return;
+                    error.message = 'Failed to initialize scripts: ' + error.message;
+                    throw error;
                 });
 
             if (functionsAppsScripts === undefined) {
@@ -52,15 +56,15 @@ class AppScripts {
                 return;
             }
 
-            this.scripts = {};
+            AppScripts.instance.scripts = {};
 
             functionsAppsScripts.forEach(functionName => {
-                this.scripts[functionName] = async (...args) => {
+                AppScripts.instance.scripts[functionName] = async (...args) => {
                     return await sendToAppScript(functionName, DEFAULT_TIMEOUT, args);
                 }
             });
 
-            this.withTimeout = (timeout) => {
+            AppScripts.instance.withTimeout = (timeout) => {
                 return {
                     scripts: { ...functionsAppsScripts.map(functionName => {
                         return async (...args) => {
@@ -70,13 +74,14 @@ class AppScripts {
                 }
             }
 
-            appScriptIsInit = true
+            AppScripts.instance.appScriptIsInit = true
         }
 
         const sendToAppScript = (functionName, timeout, ...args) => { // Надсилаємо запит на виконання функції у AppScript
-            if (appScriptIsInit && !this.scripts[functionName]) {
+            if (AppScripts.instance.appScriptIsInit && !AppScripts.instance.scripts[functionName]) {
                 throw new Error(`Function "${functionName}" is not available in AppScript.`);
             }
+
             const messageId = randomString();
             const messageBody = { // Створюємо тіло для повідомлення
                 messageId: messageId,
@@ -84,7 +89,7 @@ class AppScripts {
                 args: args
             }
             
-            const promise = new Promise((resolve, reject) => { // Створюємо проміс, для очікування результата
+            const promise = new Promise(async (resolve, reject) => { // Створюємо проміс, для очікування результата
                 const timer = setTimeout(() => {
                     reject(new Error(`Timeout: No response for "${functionName}" after ${timeout}ms`))
                     messagedHandlers.delete(messageId)
@@ -101,14 +106,13 @@ class AppScripts {
                     }
                 });
             });
-
+            
             window.parent.postMessage(messageBody, APP_SCRIPT_ORIGIN);
 
             return promise; // Віддаємо проміс
         }
 
-        initAppsScripts();
+        await initAppsScripts();
+        return AppScripts.instance;
     }
 }
-
-
