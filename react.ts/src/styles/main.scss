@@ -1,0 +1,79 @@
+@use 'variables' as vars;
+
+html {
+    box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+    //-moz-user-select: none;
+    //-khtml-user-select: none;
+    //user-select: none;
+    cursor: vars.$cursor_default;
+}
+
+::selection {
+    background-color: #eca9e9;
+    color: #fff;
+}
+
+html,body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    margin: 0;
+    font-family: sans-serif;
+    font-weight: 400;
+    overflow-x: hidden;
+    position: relative;
+    //background-color: black;
+}
+
+main {
+    height: 100%;
+}
+
+button, input, textarea {
+    font: inherit;
+    
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+ul, ol {
+    list-style: none;
+}
+
+h1, h2, h3, p, ul, ol {
+    padding: 0;
+    margin: 0;
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+th {
+    padding: 0;
+    text-align: left;
+    cursor: pointer;
+}
+
+td {
+    text-align: center;
+    padding: 0;
+}   
