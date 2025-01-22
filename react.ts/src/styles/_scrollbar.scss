@@ -1,0 +1,21 @@
+@use 'variables' as vars;
+
+.scrolling-y {
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+        background-color: vars.$color-scroll-background;
+        width: 4px;
+        border-radius: 2px;
+    }
+    &::-webkit-scrollbar-thumb {
+        border-radius: 2px;
+        background-color: vars.$color-scroll-button;
+        &:hover {
+            cursor: vars.$cursor_pointer;
+            background-color: vars.$color-scroll-button-hover;
+        }
+    }
+    &::-webkit-scrollbar-button {
+        display: none;
+    }
+}

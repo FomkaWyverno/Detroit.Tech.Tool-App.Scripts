@@ -1,0 +1,9 @@
+$key-info-max-height: 315px;
+
+.key_info {
+    max-height: calc($key-info-max-height - (var(--parent-padding-top) + var(--parent-padding-bottom)));
+
+    &:not(:last-child) > * {
+        margin-bottom: 10px;
+    }
+}

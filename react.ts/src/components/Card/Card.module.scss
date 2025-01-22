@@ -1,0 +1,19 @@
+.card {
+    background-color: vars.$color-card-background;
+    border-radius: 15px;
+    box-shadow: 2px 6px 8px #000;
+    padding: vars.$card-padding;
+    font-family: 'Inter';
+    color: vars.$color-card-text;
+
+    width: fit-content;
+    height: fit-content;
+
+    transition: height 1s ease;
+
+    overflow: hidden;
+}
+
+.card_wrapper {
+    overflow: hidden;
+}

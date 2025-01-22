@@ -1,0 +1,17 @@
+@use './variables' as vars;
+
+.classic_button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+
+    color: #fff;
+    font-family: 'Play';
+    font-size: 20px;
+    font-weight: 400;
+
+    cursor: vars.$cursor_pointer;
+    user-select: none;
+    text-align: center;
+}

@@ -1,0 +1,23 @@
+.block_boolean_info {
+    font-weight: 400;
+    font-size: 20px;
+}
+
+.block_boolean_label {
+    margin-left: 5px;
+    padding: 0px 15px;
+    border-radius: 5px;
+    color: #fff;
+    font-family: 'Play';
+
+    pointer-events: none;
+    user-select: none;
+}
+
+.block_boolean_label__true {
+    background-color: #65FBD2;
+}
+
+.block_boolean_label__false {
+    background-color: #F42424;
+}

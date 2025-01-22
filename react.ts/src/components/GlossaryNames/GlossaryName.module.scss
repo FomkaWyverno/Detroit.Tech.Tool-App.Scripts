@@ -1,0 +1,33 @@
+.glossary_names {
+    align-self: self-start;
+    flex-grow: 1;
+
+    display: flex;
+    font-family: 'Play';
+    color: #515151;
+    
+    flex-direction: column;
+
+    &__header {
+        display: inline;
+        text-align: center;
+
+        &__title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        &__details_code {
+            display: inline;
+            font-size: 18px;
+            &__text {
+                display: inline;
+                font-weight: 400;
+            }
+            &__code {
+                font-weight: bold;
+                margin-left: 5px;
+            }
+        }
+    }
+}
