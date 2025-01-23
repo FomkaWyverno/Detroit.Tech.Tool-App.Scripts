@@ -4,10 +4,8 @@ import ButtonSearchKeyInSheet from "./ButtonSearchKeyInSheet/ButtonSearchKeyInSh
 import GlossaryNames from "./GlossaryNames/GlossaryNames";
 import style from './ControlingPanel.module.scss'
 
-interface Props {}
 
-
-function ControlingPanel(props: Props) {
+function ControlingPanel() {
     const panelRef = useRef<HTMLDivElement>(null);
     const buttonsWrapperRef = useRef<HTMLDivElement>(null);
     const glossaryWrapperRef = useRef<HTMLDivElement>(null);

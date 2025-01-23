@@ -19,7 +19,7 @@ function ClassicButton({
         if (onClick) onClick(e);
     }
 
-    const onMouseEnterHandler = (e: MouseEvent<HTMLButtonElement>) => SoundManager.playHoverSound();
+    const onMouseEnterHandler = () => SoundManager.playHoverSound();
 
     return (
         <button className={`classic_button ${className}`} style={style_component} onMouseEnter={onMouseEnterHandler} onClick={onClickHandler}>{text}</button>

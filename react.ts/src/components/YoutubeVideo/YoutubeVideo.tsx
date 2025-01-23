@@ -1,7 +1,6 @@
 import YouTube, { YouTubeProps } from "react-youtube"
 import style from "./YoutubeVideo.module.scss"
 import { useEffect, useState } from "react"
-import path from "path"
 
 interface IYoutubeVideo {
     videoURL?: string
