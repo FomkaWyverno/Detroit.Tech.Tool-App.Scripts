@@ -1,0 +1,14 @@
+.button_search_in_sheet {
+    background-color: #67D6FF;
+    width: 192px;
+    height: 36px;
+    transition: background-color .5s ease, transform .2s ease;
+
+    &:hover {
+        background-color: #1e80a3;
+    }
+
+    &:active {
+        transform: translate(1px, 3px);
+    }
+}

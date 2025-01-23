@@ -1,0 +1,80 @@
+.glossary_item {
+    display: flex;
+    align-items: flex-end;
+    &:not(:first-child) {
+        margin-top: 10px;
+    }
+}
+
+$button_item_width: 31px;
+$button_item_height: 22px;
+
+.button_insert_item {
+    position: relative;
+    align-items: center;
+
+    width: $button_item_width;
+    height: $button_item_height;
+    
+    padding: 0;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    overflow: visible;
+
+    margin-left: 10px;
+
+    cursor: vars.$cursor_pointer;
+
+    transition: transform .5s ease-out;
+
+    &__image {
+        position: absolute;
+        display: block;
+
+        top: 0;
+        left: 0;
+
+        background-image: vars.$cursor_pointer_img;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+
+        width: $button_item_height;
+        height: $button_item_width;
+
+        transform-origin: left top;
+
+        --insert-button-rotate: -90deg;
+        --insert-button-scaleX: -1;
+        --insert-button-translateX: 0px;
+        --insert-button-translateY: 0px;
+
+        transform:
+            rotate(var(--insert-button-rotate))
+            scaleX(var(--insert-button-scaleX))
+            translateX(var(--insert-button-translateX))
+            translateY(var(--insert-button-translateY));
+
+        pointer-events: none;
+        user-select: none;
+
+        transition: transform .5s ease-out;
+    }
+
+    &:hover {
+        transform: rotate(360deg);
+    }
+
+    &:active &__image {
+        --insert-button-translateY: -10px;
+    }
+}
+
+.glossary_item_name {
+    margin-left: 5px;
+    font-family: 'Inter';
+    font-weight: bold;
+    font-size: 16px;
+    color: #373636;
+}

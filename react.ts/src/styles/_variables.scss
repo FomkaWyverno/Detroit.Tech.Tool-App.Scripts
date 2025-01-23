@@ -1,5 +1,8 @@
-$cursor_default: url(../assets/cursor.png), auto;
-$cursor_pointer: url(../assets/pointer.png), auto;
+$cursor_default_img: url('@/assets/cursor.png');
+$cursor_pointer_img: url('@/assets/pointer.png');
+
+$cursor_default: $cursor_default_img, auto;
+$cursor_pointer: $cursor_pointer_img, auto;
 
 $color-scroll-background: #C7C7C7;
 $color-scroll-button: #A0A0A0;

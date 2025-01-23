@@ -1,5 +1,5 @@
-import BooleanBlockInfo from '../BooleanBlockInfo/BooleanBlockInfo'
-import InfoBlock from '../InfoBlock/InfoBlock'
+import BooleanBlockInfo from './BooleanBlockInfo/BooleanBlockInfo'
+import InfoBlock from './InfoBlock/InfoBlock'
 import style from './KeyInfo.module.scss'
 
 interface IKeyInfoProps {

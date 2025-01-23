@@ -1,0 +1,66 @@
+.container_input {
+    position: relative;
+
+    &__input {
+        font-family: 'Play';
+        height: 50px;
+        width: 100%;
+        cursor: vars.$cursor_pointer;
+
+
+        outline: 0;
+        border: 0;
+        border-bottom: 2px solid;
+        border-image: linear-gradient(to right, vars.$color-input, vars.$color-input-border-linear-gradient-right);;
+        border-image-slice: 1;
+
+
+        font-size: 18px;
+        color: vars.$color-input;
+
+        padding: 7px 0;
+        background: transparent;
+
+        transition: border-image 1s;
+
+        &::placeholder {
+            color: transparent;
+        }
+
+        &:placeholder-shown ~ .container_input__label {
+            font-size: 18px;
+            cursor: vars.$cursor_pointer;
+            top: 20px;
+        }
+
+        &:focus {
+            padding-bottom: 6px;
+            font-weight: 700;
+            border-width: 3px;
+            border-image: linear-gradient(to right, vars.$color-input-border-linear-gradient-left, vars.$color-input-border-linear-gradient-right);
+            border-image-slice: 1;
+
+            &~ .container_input__label {
+                top: 0;
+                display: block;
+                transition: 0.2s;
+                font-size: 16px;
+                color: vars.$color-input;
+                font-weight: 700;
+            }
+        }
+
+        &:required, &:invalid {
+            box-shadow: none;
+        }
+    }
+
+    &__label {
+        position: absolute;
+        top: 0;
+        display: block;
+        transition: .2s;
+        font-size: 1rem;
+        color: vars.$color-input;
+    }
+}

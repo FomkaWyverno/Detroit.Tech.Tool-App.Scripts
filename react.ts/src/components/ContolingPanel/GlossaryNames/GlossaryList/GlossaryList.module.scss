@@ -1,0 +1,9 @@
+.glossary_list {
+    margin-top: 20px;
+    padding-top: 5px;
+    overflow: visible;
+    
+    & > li:not(:last-child) {
+        margin-bottom: 5px;
+    }
+}

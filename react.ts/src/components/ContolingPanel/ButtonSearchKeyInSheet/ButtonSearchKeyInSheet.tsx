@@ -1,4 +1,4 @@
-import ClassicButton from "../ui/ClassicButton"
+import ClassicButton from "../../ui/ClassicButton"
 import { MouseEvent } from "react"
 import style from './ButtonSearchSheet.module.scss'
 

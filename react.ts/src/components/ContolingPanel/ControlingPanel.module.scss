@@ -1,14 +1,14 @@
 .controling_panel {
     display: flex;
     flex-direction: column;
-    width: 480px;
+    width: 100%;
     height: 280px;
 }
 
 .controling_wrapper {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
 
     padding: 10px 25px;
 
