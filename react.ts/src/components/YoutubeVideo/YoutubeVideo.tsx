@@ -1,6 +1,8 @@
-import YouTube, { YouTubePlayer, YouTubeProps } from "react-youtube"
+import YouTube, { YouTubeEvent, YouTubePlayer, YouTubeProps } from "react-youtube"
 import style from "./YoutubeVideo.module.scss"
 import { useEffect, useRef, useState } from "react"
+import { YouTubeErrorEvent, YouTubePlaybackRateChangeEvent, YouTubePlayerChangeStateEvent, YouTubePlayerPlaybackQualityChangeEvent, YouTubePlayerReadyEvent, YouTubePlayerState, YouTubeVideoPlayer } from "../../types/youtube.d"
+import { YouTubePlayerUtil } from "../../utils/YouTubePlayerUtil"
 
 interface IYoutubeVideo {
     videoURL?: string
@@ -10,7 +12,7 @@ function YoutubeVideo({
     videoURL = ''
 }: IYoutubeVideo) {
     const [videoId, setVideoId] = useState<string>('QD1pbWCJcKQ')
-    const [player, setPlayer] = useState<YouTubePlayer>(null);
+    const [player, setPlayer] = useState<YouTubeVideoPlayer | null>(null);
     const trackerTimer = useRef<number | null>(null);
 
     const getVideoIdFromURL = (videoURL: string): string => {
@@ -49,33 +51,57 @@ function YoutubeVideo({
 
     useEffect(() => {
         if (videoURL && videoURL !== '') {
-            player?.loadVideoById(getVideoIdFromURL(videoURL), 0);
-            console.log('New Video ' + videoURL)
+            const newVideoId = getVideoIdFromURL(videoURL);
+            if (player && newVideoId) {
+                player.loadVideoById({videoId: newVideoId, startSeconds: 0});
+                console.log('New Video ' + videoURL);
+                setVideoId(newVideoId);
+            }
         }
     }, [videoURL]); 
 
-    const onReadyHandler: YouTubeProps['onReady'] = (event) => {
+    const onReadyHandler: YouTubeProps['onReady'] = (e: YouTubeEvent<any>) => {
+        const event: YouTubePlayerReadyEvent = YouTubePlayerUtil.toReadyEvent(e);
         console.log('Ready player');
         console.log(event.target);
         setPlayer(event.target);
     }
 
-    const onStateChangeHandler: YouTubeProps['onStateChange'] = (e) => {
-        switch (e.data) {
-            case 1: {
+    const onStateChangeHandler: YouTubeProps['onStateChange'] = (e: YouTubeEvent<number>) => {
+        const event: YouTubePlayerChangeStateEvent = YouTubePlayerUtil.toChangeStateEvent(e);
+        console.log('State change');
+        console.log(event)
+        switch (event.state) {
+            case YouTubePlayerState.PLAYING: {
                 startTrackingTime();
                 break;
             }
-            case 2:
-            case 0: {
+            case YouTubePlayerState.PAUSED:
+            case YouTubePlayerState.ENDED:
+            case YouTubePlayerState.UNKNOW: {
                 stopTrackingTime();
-                break
+                break;
             }
         }
     }
 
+    const onPlaybackQualityChangeHandler: YouTubeProps['onPlaybackQualityChange'] = (e: YouTubeEvent<any>) => {
+        const event: YouTubePlayerPlaybackQualityChangeEvent = YouTubePlayerUtil.toPlaybackQualityChangeEvent(e);
+        console.log('Playback Quality change');
+        console.log(event);
+
+    }
+
+    const onPlaybackRateChangeHandler: YouTubeProps['onPlaybackRateChange'] = (e: YouTubeEvent<number>) => {
+        const event: YouTubePlaybackRateChangeEvent = YouTubePlayerUtil.toPlaybackRateChangeEvent(e);
+        console.log('Playback rate change');
+        console.log(event);
+    }
+
     const onErrorHandler: YouTubeProps['onError'] = (e) => {
-        console.error(e)
+        const event: YouTubeErrorEvent = YouTubePlayerUtil.toErrorEvent(e);
+        console.log('YT Error')
+        console.error(event);
     }
 
     const opts: YouTubeProps['opts'] = {
@@ -92,6 +118,8 @@ function YoutubeVideo({
             opts={opts}
             onReady={onReadyHandler}
             onStateChange={onStateChangeHandler}
+            onPlaybackQualityChange={onPlaybackQualityChangeHandler}
+            onPlaybackRateChange={onPlaybackRateChangeHandler}
             onError={onErrorHandler}/>
     )
 }
