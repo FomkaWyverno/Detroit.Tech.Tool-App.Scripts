@@ -7,6 +7,7 @@ interface IInput {
     id: string
     autocomplete?: string
     placeholder?: string
+    value_input?: string
     onChange?: (e: ChangeEvent<HTMLInputElement>) => void
 }
 
@@ -27,6 +28,7 @@ function InputText({
     id,
     autocomplete = 'off',
     placeholder = '',
+    value_input,
     onChange
 }: IInput) {
     const onMouseEnterHandler = () => SoundManager.playHoverSound();
@@ -43,6 +45,7 @@ function InputText({
                 onMouseEnter={onMouseEnterHandler}
                 onClick={onClickHandler}
                 onChange={onChange}
+                value={value_input}
                 required/>
             <label
                 className={style.container_input__label}

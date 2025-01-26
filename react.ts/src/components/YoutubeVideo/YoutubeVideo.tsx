@@ -1,53 +1,34 @@
 import YouTube, { YouTubeEvent, YouTubeProps } from "react-youtube"
 import style from "./YoutubeVideo.module.scss"
-import { useEffect, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import { YouTubeVideoPlayer } from "../../types/youtube/interfaces"
 import { YouTubePlayerUtil } from "../../utils/YouTubePlayerUtil"
-import {
-    YouTubePlayerReadyEvent,
-    YouTubePlayerChangeStateEvent,
-    YouTubePlayerState,
-    YouTubePlayerPlaybackQualityChangeEvent,
-    YouTubePlaybackRateChangeEvent,
-    YouTubeErrorEvent
-} from "../../types/youtube"
+import * as ReactYouTubeTypes from "../../types/youtube"
+import useYouTubeURLSync from "../../hooks/youtube/useYouTubeURLSync"
 
 
 interface IYoutubeVideo {
     videoURL?: string
+    setContextValue: (context: string) => void
 }
 
 function YoutubeVideo({
-    videoURL = ''
+    videoURL = '',
+    setContextValue
 }: IYoutubeVideo) {
-    const [videoId, setVideoId] = useState<string>('QD1pbWCJcKQ')
     const [player, setPlayer] = useState<YouTubeVideoPlayer | null>(null);
     const trackerTimer = useRef<number | null>(null);
 
-    const getVideoIdFromURL = (videoURL: string): string => {
-        if (videoURL?.startsWith('https://youtu.be/')) {
-            const url: URL = new URL(videoURL);
-            const paths = url.pathname.split('/');
-            const parsedVideoId = paths[1] || videoId;
-            return parsedVideoId;
-        }
-        if (videoURL?.startsWith('https://www.youtube.com/watch')) {
-            const urlParams: URLSearchParams = new URLSearchParams(videoURL.split('?')[1]);
-            const parsedVideoId: string | null = urlParams.get('v');
-            if (parsedVideoId) {
-                return parsedVideoId;
-            } else {
-                return videoId;
-            }
-        }
-        return videoId;      
-    }
-
+    useYouTubeURLSync(player, videoURL);
+    
     const startTrackingTime = () => {
         if (!trackerTimer.current && player) {
+            console.log(`Швидкість відтворення: ${player.getPlaybackRate()} Для перегляду однієї секунди потрібно: ${1000 / player.getPlaybackRate()}`)
             trackerTimer.current = window.setInterval(() => {
-            //console.log(player.getCurrentTime());
-          }, 1000); // Оновлюємо час кожну секунду
+                setContextValue(player.getCurrentTime().toString());
+                console.log(player.getCurrentTime());
+            }, 1000 / player.getPlaybackRate()); // Оновлюємо кожну секунду у плеере, враховуючи швидкість відео.
+            // Затримка таймаута вираховується шляхом ділення поточної швидкості на 1 секунду в мс. Як приклад 1000 / 0,25 = 4000 або 1000 / 1,25 = 800
         }
     };
 
@@ -58,36 +39,29 @@ function YoutubeVideo({
         }
     };
 
-    useEffect(() => {
-        if (videoURL && videoURL !== '') {
-            const newVideoId = getVideoIdFromURL(videoURL);
-            if (player && newVideoId) {
-                player.loadVideoById({videoId: newVideoId, startSeconds: 0});
-                console.log('New Video ' + videoURL);
-                setVideoId(newVideoId);
-            }
-        }
-    }, [videoURL]); 
-
     const onReadyHandler: YouTubeProps['onReady'] = (e: YouTubeEvent<any>) => {
-        const event: YouTubePlayerReadyEvent = YouTubePlayerUtil.toReadyEvent(e);
+        const event: ReactYouTubeTypes.YouTubePlayerReadyEvent = YouTubePlayerUtil.toReadyEvent(e);
         console.log('Ready player');
         console.log(event.target);
         setPlayer(event.target);
     }
 
     const onStateChangeHandler: YouTubeProps['onStateChange'] = (e: YouTubeEvent<number>) => {
-        const event: YouTubePlayerChangeStateEvent = YouTubePlayerUtil.toChangeStateEvent(e);
-        console.log('State change');
+        const event: ReactYouTubeTypes.YouTubePlayerChangeStateEvent = YouTubePlayerUtil.toChangeStateEvent(e);
+        console.log('State change traking?');
         console.log(event)
+        console.log(event.state === ReactYouTubeTypes.YouTubePlayerState.PLAYING)
+        console.log(event.state)
+        console.log(ReactYouTubeTypes.YouTubePlayerState.PLAYING)
         switch (event.state) {
-            case YouTubePlayerState.PLAYING: {
+            case ReactYouTubeTypes.YouTubePlayerState.PLAYING: {
+                console.log('Start tracking')
                 startTrackingTime();
                 break;
             }
-            case YouTubePlayerState.PAUSED:
-            case YouTubePlayerState.ENDED:
-            case YouTubePlayerState.UNKNOW: {
+            case ReactYouTubeTypes.YouTubePlayerState.PAUSED:
+            case ReactYouTubeTypes.YouTubePlayerState.ENDED:
+            case ReactYouTubeTypes.YouTubePlayerState.UNKNOW: {
                 stopTrackingTime();
                 break;
             }
@@ -95,21 +69,23 @@ function YoutubeVideo({
     }
 
     const onPlaybackQualityChangeHandler: YouTubeProps['onPlaybackQualityChange'] = (e: YouTubeEvent<any>) => {
-        const event: YouTubePlayerPlaybackQualityChangeEvent = YouTubePlayerUtil.toPlaybackQualityChangeEvent(e);
+        const event: ReactYouTubeTypes.YouTubePlayerPlaybackQualityChangeEvent = YouTubePlayerUtil.toPlaybackQualityChangeEvent(e);
         console.log('Playback Quality change');
         console.log(event);
 
     }
 
     const onPlaybackRateChangeHandler: YouTubeProps['onPlaybackRateChange'] = (e: YouTubeEvent<number>) => {
-        const event: YouTubePlaybackRateChangeEvent = YouTubePlayerUtil.toPlaybackRateChangeEvent(e);
+        const event: ReactYouTubeTypes.YouTubePlaybackRateChangeEvent = YouTubePlayerUtil.toPlaybackRateChangeEvent(e);
         console.log('Playback rate change');
         console.log(event);
+        stopTrackingTime();
+        startTrackingTime();
     }
 
     const onErrorHandler: YouTubeProps['onError'] = (e) => {
-        const event: YouTubeErrorEvent = YouTubePlayerUtil.toErrorEvent(e);
-        console.log('YT Error')
+        const event: ReactYouTubeTypes.YouTubeErrorEvent = YouTubePlayerUtil.toErrorEvent(e);
+        console.error('YouTube-Player Error:')
         console.error(event);
     }
 
@@ -120,6 +96,8 @@ function YoutubeVideo({
             autoplay: 1
         }
     }
+
+    console.log('Render Youtube')
     return (
         <YouTube
             className={style.youtube_container}
