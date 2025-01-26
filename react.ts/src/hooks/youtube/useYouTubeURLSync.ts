@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { YouTubeVideoPlayer } from "../../types/youtube";
 import { getVideoIdFromURL } from "../../utils/YouTubePlayerUtil";
 
