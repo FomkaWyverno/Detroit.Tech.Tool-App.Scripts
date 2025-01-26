@@ -1,8 +1,17 @@
-import YouTube, { YouTubeEvent, YouTubePlayer, YouTubeProps } from "react-youtube"
+import YouTube, { YouTubeEvent, YouTubeProps } from "react-youtube"
 import style from "./YoutubeVideo.module.scss"
 import { useEffect, useRef, useState } from "react"
-import { YouTubeErrorEvent, YouTubePlaybackRateChangeEvent, YouTubePlayerChangeStateEvent, YouTubePlayerPlaybackQualityChangeEvent, YouTubePlayerReadyEvent, YouTubePlayerState, YouTubeVideoPlayer } from "../../types/youtube.d"
+import { YouTubeVideoPlayer } from "../../types/youtube/interfaces"
 import { YouTubePlayerUtil } from "../../utils/YouTubePlayerUtil"
+import {
+    YouTubePlayerReadyEvent,
+    YouTubePlayerChangeStateEvent,
+    YouTubePlayerState,
+    YouTubePlayerPlaybackQualityChangeEvent,
+    YouTubePlaybackRateChangeEvent,
+    YouTubeErrorEvent
+} from "../../types/youtube"
+
 
 interface IYoutubeVideo {
     videoURL?: string
@@ -37,7 +46,7 @@ function YoutubeVideo({
     const startTrackingTime = () => {
         if (!trackerTimer.current && player) {
             trackerTimer.current = window.setInterval(() => {
-            console.log(player.getCurrentTime());
+            //console.log(player.getCurrentTime());
           }, 1000); // Оновлюємо час кожну секунду
         }
     };
