@@ -25,6 +25,7 @@
 
         &::placeholder {
             color: transparent;
+            user-select: none;
         }
 
         &:placeholder-shown ~ .container_input__label {
@@ -62,5 +63,7 @@
         transition: .2s;
         font-size: 1rem;
         color: vars.$color-input;
+
+        user-select: none;
     }
 }

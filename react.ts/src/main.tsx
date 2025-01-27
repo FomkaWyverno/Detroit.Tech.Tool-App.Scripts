@@ -7,5 +7,4 @@ createRoot(document.getElementById('root')!).render(
     <AppContext.Provider value={{}}>
         <App></App>
     </AppContext.Provider>
-    
 )

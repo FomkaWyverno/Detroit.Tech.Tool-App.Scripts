@@ -10,6 +10,7 @@ interface IInputsContainer {
     actorOnChange?: (e: ChangeEvent<HTMLInputElement>) => void
 
     context_value?: string
+    timing_value?: string
 }
 
 function InputsContainer({
@@ -19,7 +20,8 @@ function InputsContainer({
     timingOnChange,
     actorOnChange,
 
-    context_value
+    context_value,
+    timing_value
 }: IInputsContainer) {
 
     return (
@@ -27,7 +29,7 @@ function InputsContainer({
             <InputText id="youtube-link-input" placeholder="Посилання на Youtube" onChange={youtubeLinkOnChange }/>
             <InputText id="code-input" placeholder="Введіть код" onChange={codeOnChange}/>
             <InputText id="context-input" placeholder="Введіть контекст" onChange={contextOnChange} value_input={context_value}/>
-            <InputText id="timing-input" placeholder="Введіть таймінг" onChange={timingOnChange}/>
+            <InputText id="timing-input" placeholder="Введіть таймінг" onChange={timingOnChange} value_input={timing_value}/>
             <InputText id="actor" placeholder="Введіть актора" onChange={actorOnChange}/>
         </div>        
     )
