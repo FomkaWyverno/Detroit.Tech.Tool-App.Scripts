@@ -1,0 +1,36 @@
+.loader_container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.loader_text_container {
+    transform: translate(0px, -54px);
+    width: 100%;
+    text-align: center;
+
+    &__state {
+        font-family: 'Play';
+        font-size: 36px;
+        font-weight: 400;
+
+        &__container {
+            position: relative;
+            width: 100%;
+
+            &__error {
+                position: absolute;
+
+                left: 0;
+                right: 0;
+
+                font-size: 26px;
+                color: #e97070;
+            }
+        }
+
+    }
+}
