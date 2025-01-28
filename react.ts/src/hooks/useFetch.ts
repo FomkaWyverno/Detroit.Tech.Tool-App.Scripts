@@ -12,7 +12,7 @@ function useFetch<T>(url: string): [T | null, boolean, string | null] {
             try {
                 const response = await fetch(url);
                 if (!response.ok) {
-                    throw new Error("Error while fetching data. Status: " + response.);
+                    throw new Error(`Error while fetching data. Status: ${response.status}${response.statusText ? " Status-Text: " + response.statusText : ""}`);
                 }
                 const result = await response.json() as T;
                 setData(result);
@@ -25,7 +25,7 @@ function useFetch<T>(url: string): [T | null, boolean, string | null] {
         }
 
         fetchData();
-    },[url]);
+    }, [url]);
 
     return [data, loading, error];
 }

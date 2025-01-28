@@ -23,7 +23,7 @@ export function App() {
 
     const youtubeLinkOnChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         if (youtubeURL != e.target.value) setYoutubeURL(e.target.value);
-    }, []);
+    }, [youtubeURL]);
 
     const handleTimeChange = useCallback((youtubeURL: string, time: number) => {
         setContextValue(`https://youtu.be/${getVideoIdFromURL(youtubeURL)}?t=${Math.trunc(time)}`);
