@@ -14,9 +14,9 @@ function AppInitializer({
         isInitialize, // Чи ініцілізована програма?
         state, // Стан ініцілізації
         error, // Повідомлення про помилку
+        progress, // Прогресс ініцілізації програми
         mapLocKeyByCode // Мапа з ключами локалізації, де ключ це код, а значення ключ локалізації відповідний до кода.
     ] = useAppInit();
-
 
     if (isInitialize) {
         return (
@@ -25,7 +25,7 @@ function AppInitializer({
             </AppContext.Provider>
         );
     } else {
-        return <LoadingScreen state={state} error_msg={error}/>
+        return <LoadingScreen state={state} error_msg={error} progress={progress}/>
     } 
 }
 

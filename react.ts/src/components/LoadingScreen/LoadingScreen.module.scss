@@ -5,15 +5,18 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    & > :not(:first-child) {
+        transform: translate(0px, -54px);
+    } 
 }
 
 .loader_text_container {
-    transform: translate(0px, -54px);
     width: 100%;
     text-align: center;
 
     &__state {
-        font-family: 'Play';
+        font-family: 'Play', 'Noto Color Emoji';
         font-size: 36px;
         font-weight: 400;
 

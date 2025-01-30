@@ -17,8 +17,12 @@ function useFetch<T>(url: string): [T | null, boolean, string | null] {
                 const result = await response.json() as T;
                 setData(result);
                 console.log('Fetched data')
-            } catch (error: any) {
-                setError(error.message);
+            } catch (error: unknown) {
+                if (error instanceof Error) {
+                    setError(error.message);
+                } else {
+                    setError(String(error));
+                }
             } finally {
                 setLoading(false);
             }
