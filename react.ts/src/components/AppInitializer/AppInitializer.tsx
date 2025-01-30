@@ -1,11 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, {  } from 'react'
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
-import useFetch from '../../hooks/useFetch';
-import { LocalizationData } from '../../types/localization/localization';
-import { LocalizationKeyText } from '../../models/localization/LocalizationKeyText';
-import useLocalizationMap from '../../hooks/init-app/useLocalizationMap';
-
-const localizationDataURL = 'https://raw.githubusercontent.com/FomkaWyverno/Detroit.Tech.Tool-App.Scripts.github.io/refs/heads/react.js/Detroit_LocalizationRegistry.json';
+import useAppInit from '../../hooks/init-app/useAppInit';
+import { AppContext } from '../../context/AppContext';
 
 interface IAppInitializer {
     children: React.ReactNode
@@ -14,34 +10,23 @@ interface IAppInitializer {
 function AppInitializer({
     children
 }: IAppInitializer) {
-    const [isInitialize, setInitialize] = useState<boolean>(false);
-    const [state, setState] = useState<string>('Завантаження ключів локалізації...');
-    const [error_msg, setErrorMsg] = useState<string>('');
-    const [localizationData, loading_data, error] = useFetch<LocalizationData>(localizationDataURL);
-    const localizationMap: Map<string, LocalizationKeyText> | null = useLocalizationMap(localizationData);
+    const [
+        isInitialize, // Чи ініцілізована програма?
+        state, // Стан ініцілізації
+        error, // Повідомлення про помилку
+        mapLocKeyByCode // Мапа з ключами локалізації, де ключ це код, а значення ключ локалізації відповідний до кода.
+    ] = useAppInit();
 
-    useEffect(() => {
-        if (error) {
-            setState('Сталась помилка!');
-            setErrorMsg(error);
-        } else if (!loading_data && localizationData) {
-            setState('Оброблюємо ключі локалізації!');
-        }
-        console.log('effect')
-        console.log(localizationData)
-        console.log(loading_data)
-        console.log(error)
-        console.log('effect');
-    },[localizationData, loading_data, error]);
 
-    useEffect(() => {
-        if (localizationMap) {
-            console.log(localizationMap);
-        }
-    }, [localizationMap]);
-    return isInitialize
-            ? children
-            : <LoadingScreen state={state} error_msg={error_msg}/>
+    if (isInitialize) {
+        return (
+            <AppContext.Provider value={{mapLocKeyByCode}}>
+                {children}
+            </AppContext.Provider>
+        );
+    } else {
+        return <LoadingScreen state={state} error_msg={error}/>
+    } 
 }
 
 export default AppInitializer
