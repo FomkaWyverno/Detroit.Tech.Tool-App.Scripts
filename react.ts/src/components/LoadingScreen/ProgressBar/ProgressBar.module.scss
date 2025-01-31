@@ -15,11 +15,10 @@
     background-size: 400% 400%;
     animation: gradient 5s ease infinite;
 
-    transition: width 0.5s ease;
+    transition: transform 2s ease-in-out, width 1s ease;
 
     &__infitity {
         width: 10%;
-        animation: infitity_progress 1.5s ease-in-out infinite alternate, gradient 5s ease infinite;
     }
 }
 
@@ -33,13 +32,4 @@
 	100% {
 		background-position: 0% 50%;
 	}
-}
-
-@keyframes infitity_progress {
-    from {
-        transform: translateX(0%);
-    }
-    to {
-        transform: translateX(calc(100% * 9));
-    }
 }
