@@ -4,6 +4,7 @@ import useFetch from "../useFetch";
 import { LocalizationData } from "../../types/localization/localization";
 import { groupLocKeyTextByCode, mapLocalizationToKeyText } from '../../utils/LocalizationUtil';
 import { AppScripts } from '../../services/app-scripts/AppScripts';
+import { Sheet } from '../../models/sheet/Sheet';
 
 const localizationDataURL = 'https://raw.githubusercontent.com/FomkaWyverno/Detroit.Tech.Tool-App.Scripts.github.io/refs/heads/react.js/Detroit_LocalizationRegistry.json';
 
@@ -55,26 +56,8 @@ function useAppInit(): [
             try {
                 // Отримання екземпляра AppScripts
                 const appScripts = await AppScripts.getInstance();
-                setState(STATE.APP_SCRIPTS_SHEETS_NAMES);
-
-                // Отримання назв аркушів
-                const sheets: Array<string> = await appScripts.scripts.getSheetNames();
+                const sheets: Array<Sheet> = await processSheets(appScripts, setState, setProgress);
                 console.log(sheets);
-
-                setProgress(0);
-                const total = sheets.length;
-                // Перебір кожного аркуша та завантаження його вмісту
-                for (let i = 0; i < total; i++) {
-                    const sheetName = sheets[i];
-                    setState(`${STATE.APP_SCRIPTS_SHEET_GET_VALUES} "${sheetName}" ${i + 1} з ${total}`);
-                    const sheetValue: string[][] = await appScripts.scripts.getValueSheet(sheetName);
-                    setProgress((i + 1) / total);
-                    if (!sheetValue) {
-                        throw new Error(`Аркуш: "${sheetName}" немає вмісту!`)
-                    }
-                }
-                // Обнулення прогресу після завершення процесу
-                setTimeout(() => setProgress(-1), 2000);
             } catch (e) {
                 console.error('Сталася помилка!!!');
                 console.error(e);
@@ -105,4 +88,32 @@ function groupKeysByCode(locData: LocalizationData): Map<string, LocalizationKey
     const groupMap: Map<string, LocalizationKeyText> = groupLocKeyTextByCode(keys)
 
     return groupMap;
+}
+
+async function processSheets(
+    appScripts: AppScripts,
+    setState: (state: string) => void,
+    setProgress: (progress: number) => void
+): Promise<Array<Sheet>> {
+    setState(STATE.APP_SCRIPTS_SHEETS_NAMES);
+
+    // Отримання назв аркушів
+    const sheetsNames: Array<string> = await appScripts.scripts.getSheetNames();
+    console.log(sheetsNames);
+
+    setProgress(0);
+    const total = sheetsNames.length;
+    const sheets: Array<Sheet> = [];
+    // Перебір кожного аркуша та завантаження його вмісту
+    for (let i = 0; i < total; i++) {
+        const sheetName = sheetsNames[i];
+        setState(`${STATE.APP_SCRIPTS_SHEET_GET_VALUES} "${sheetName}" ${i + 1} з ${total}`);
+        const sheetValue: string[][] = await appScripts.scripts.getValueSheet(sheetName);
+        setProgress((i + 1) / total);
+        if (!sheetValue) throw new Error(`Аркуш: "${sheetName}" немає вмісту!`);
+        sheets.push(new Sheet(sheetName, sheetValue));
+    }
+    // Обнулення прогресу після завершення процесу
+    setTimeout(() => setProgress(-1), 2000);
+    return sheets;
 }
