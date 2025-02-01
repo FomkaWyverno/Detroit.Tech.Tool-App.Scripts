@@ -6,6 +6,7 @@ import { groupLocKeyTextByCode, mapLocalizationToKeyText } from '../../utils/Loc
 import { AppScripts } from '../../services/app-scripts/AppScripts';
 import { Sheet } from '../../models/sheet/Sheet';
 import { parseSheetToLocalizationSheetKeys } from '../../utils/SheetUtil';
+import { LocalizationSheetKey } from '../../models/localization/LocalizationSheetKey';
 
 const localizationDataURL = 'https://raw.githubusercontent.com/FomkaWyverno/Detroit.Tech.Tool-App.Scripts.github.io/refs/heads/react.js/Detroit_LocalizationRegistry.json';
 
@@ -60,7 +61,9 @@ function useAppInit(): [
             try {
                 // Отримання екземпляра AppScripts
                 const appScripts = await AppScripts.getInstance();
-                console.log(parseSheetToLocalizationSheetKeys(new Sheet('Блок-Схеми',await appScripts.scripts.getValueSheet('Блок-Схеми'))));
+                const keys: LocalizationSheetKey[] = parseSheetToLocalizationSheetKeys(new Sheet('Блок-Схеми',await appScripts.scripts.getValueSheet('Блок-Схеми')));
+                console.log(keys);
+                console.log(keys[keys.length-1]);
                 // const sheets: Array<Sheet> = await processSheets(appScripts, setState, setProgress);
                 // console.log(sheets);
                 // sheets.forEach(sheet => {
