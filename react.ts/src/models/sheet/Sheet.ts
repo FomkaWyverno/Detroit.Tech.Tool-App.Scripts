@@ -1,4 +1,5 @@
 import { Row } from "./Row";
+import { Range } from './Range';
 
 /**
  * Представляє електронний аркуш із рядками (`Row`) та заголовками.
@@ -114,6 +115,20 @@ export class Sheet {
      */
     public getSheetName(): string {
         return this.sheetName;
+    }
+
+    
+    /**
+     * Отримує область (діапазон) значень для поточного аркуша.
+     *
+     * @param {number} indexRow індекс початкового рядка
+     * @param {number} indexColumn іденкс початкової колонки
+     * @param {?number} [numRows]  Кількість рядків (за замовчуванням 1).
+     * @param {?number} [numColumns] Кількість колонок (за замовчуванням 1).
+     * @returns {Range} Об'єкт діапазону (`Range`) для вказаної області.
+     */
+    public getRange(indexRow: number, indexColumn: number, numRows?: number, numColumns ?: number): Range {
+        return new Range(this, indexRow, indexColumn, numRows, numColumns)
     }
 
     /**
