@@ -58,7 +58,7 @@ export class Sheet {
      * @throws {Error} Якщо індекс виходить за межі масиву рядків.
      */
     public getRow(indexRow: number): Row {
-        if (this.rows.length >= indexRow) throw new Error(`Rows access error: Attempted to access index ${indexRow}, but array of Rows length is ${this.rows.length}.`);
+        if (indexRow >= this.rows.length) throw new Error(`Rows access error: Attempted to access index ${indexRow}, but array of Rows length is ${this.rows.length}.`);
         return this.rows[indexRow];
     }
 
@@ -106,6 +106,14 @@ export class Sheet {
      */
     public getRows(): Row[] {
         return this.rows;
+    }
+
+    
+    /**
+     * @returns {string} Повертає назву аркуша. 
+     */
+    public getSheetName(): string {
+        return this.sheetName;
     }
 
     /**

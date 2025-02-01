@@ -1,4 +1,4 @@
-export class LocalizationKeyText { // Локалізаційний текст, який має всю інформацію про ключ, включно з його ключем та контейнером де він знаходиться.
+export class LocalizationKey { // Локалізаційний текст, який має всю інформацію про ключ, включно з його ключем та контейнером де він знаходиться.
     public static readonly patternCode = /^!(.+?)! (.+)?/
     public static readonly patternVoiceKey = /.+?_.+?_.+?_.+?_(.+?)_.+/;
 
@@ -22,10 +22,10 @@ export class LocalizationKeyText { // Локалізаційний текст, �
         hasLink: boolean,
         linkExists: boolean
     ) {
-        const {code, text} = LocalizationKeyText.unpackOriginalText(ogirinalText); 
+        const {code, text} = LocalizationKey.unpackOriginalText(ogirinalText); 
         this.code = code;
         this.text = text;
-        this.voiceKey = LocalizationKeyText.getVoiceKey(key);
+        this.voiceKey = LocalizationKey.getVoiceKey(key);
         this.isVoice = hasLink && linkExists;
     }
 
@@ -39,7 +39,7 @@ export class LocalizationKeyText { // Локалізаційний текст, �
      * @returns Повертає об'єкт який містить поле code та text - текст локалізації без коду.
      */
     private static unpackOriginalText(originalText: string): {code: string, text: string} {
-        const matches = LocalizationKeyText.patternCode.exec(originalText);
+        const matches = LocalizationKey.patternCode.exec(originalText);
         if (matches) return {code: matches[1], text: matches[2] ?? ''};
         throw new Error(`Not found code and text for LocalizationKeyText. Original Text - ${originalText}`);
     }
@@ -54,7 +54,7 @@ export class LocalizationKeyText { // Локалізаційний текст, �
      * @returns Повертає голосовий ключ або `"-"`, якщо формат ключа не відповідає очікуваному.
      */
     private static getVoiceKey(key: string): string {
-        const matches = LocalizationKeyText.patternVoiceKey.exec(key);
+        const matches = LocalizationKey.patternVoiceKey.exec(key);
         if (matches) return matches[1];
         return '-';
     }

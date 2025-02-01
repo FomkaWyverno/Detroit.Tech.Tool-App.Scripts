@@ -1,8 +1,8 @@
 import React from "react";
-import { LocalizationKeyText } from "../models/localization/LocalizationKeyText";
+import { LocalizationKey } from "../models/localization/LocalizationKey";
 
 interface IAppContext {
-    mapLocKeyByCode: Map<string, LocalizationKeyText>
+    mapLocKeyByCode: Map<string, LocalizationKey>
 }
 
 export const AppContext = React.createContext<IAppContext | null>(null);

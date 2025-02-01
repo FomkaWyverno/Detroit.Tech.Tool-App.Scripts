@@ -42,7 +42,6 @@ function animation_infinity_progress(
 ) {
     const duration: number = getTransitionDurationInMs(fillRef.current!);
     let startTime: number | null = null; 
-    console.log(`Start animation infinity progress ${duration}ms`);
     const stepAnimation = (timeStamp: number) => {
         if (!startTime) startTime = timeStamp;
 
@@ -62,7 +61,7 @@ function animation_infinity_progress(
 
     let animationId = window.requestAnimationFrame(stepAnimation);
 
-    return () => { // Функція для відміни анімації
+    return () => { // Функція для відміни анімації. Потрібно, щоб useEffect відмінив анімацію, після того як прогресс стане не безкінеченим.
         window.cancelAnimationFrame(animationId);
         setTranslateX('translateX(0%)');
     }
