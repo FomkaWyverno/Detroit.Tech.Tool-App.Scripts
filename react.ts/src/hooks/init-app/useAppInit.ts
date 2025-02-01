@@ -2,11 +2,13 @@ import { LocalizationKey } from '../../models/localization/LocalizationKey';
 import { useEffect, useState } from "react";
 import useFetch from "../useFetch";
 import { LocalizationData } from "../../types/localization/localization";
-import { groupLocKeyTextByCode, mapLocalizationToKeyText } from '../../utils/LocalizationUtil';
+import { groupByVoiceKey, groupLocKeyTextByCode, mapLocalizationToKeyText } from '../../utils/LocalizationUtil';
 import { AppScripts } from '../../services/app-scripts/AppScripts';
 import { Sheet } from '../../models/sheet/Sheet';
 import { parseSheetToLocalizationSheetKeys } from '../../utils/SheetUtil';
 import { LocalizationSheetKey } from '../../models/localization/LocalizationSheetKey';
+import { useReducerLocKeyCode } from '../reducers/reducerLocKeyCode';
+import { useReducerActorNames } from '../reducers/reducerActorNames';
 
 const localizationDataURL = 'https://raw.githubusercontent.com/FomkaWyverno/Detroit.Tech.Tool-App.Scripts.github.io/refs/heads/react.js/Detroit_LocalizationRegistry.json';
 
@@ -16,6 +18,7 @@ const enum STATE {
     APP_SCRIPTS_INIT = 'Етап-2: Ініцілізації з App-Scripts ⚙️',
     APP_SCRIPTS_SHEETS_NAMES = 'Етап-2: Отримуємо назви аркушів. 📑',
     APP_SCRIPTS_SHEET_GET_VALUES = 'Етап-2: Читаємо аркуш 🔍:',
+    PROCESS_KEYS = 'Етап-3: Опрацьовуємо отриману інформацію 🧩🛠️',
     ERROR = "Сталась помилка! 😩🚨"
 }
 
@@ -31,8 +34,7 @@ function useAppInit(): [
     isInitializeApp: boolean,
     state: string,
     error: string,
-    progress: number,
-    mapLocKeyByCode: Map<string, LocalizationKey>
+    progress: number
 ] {
     const [isInitializeApp, setInitializeApp] = useState<boolean>(false);
     const [state, setState] = useState<string>(STATE.DEFAULT);
@@ -43,7 +45,8 @@ function useAppInit(): [
     const [locData, loading, error] = useFetch<LocalizationData>(localizationDataURL);
 
     // Оброблені данні таблиці та завантажена локалізація
-    const [mapLocKeyByCode, setMapLocKeyByCode] = useState<Map<string, LocalizationKey>>(new Map());
+    const [, dispatchLocKeyByCode] = useReducerLocKeyCode() // Редюсер який керує Мапою яка має ключ це код, а значення це локалізаційний ключ, з оригінульного файлу
+    const [, dispatchActorNames] = useReducerActorNames();  // Редюсер який керує Мапою яка має ключ це голосовий ключ, а значення це массив імен для цього ключа, з таблиці
 
     useEffect(() => {
         if (error) {
@@ -51,24 +54,24 @@ function useAppInit(): [
             setErrorMsg(error);
             return;
         } 
-        if (!locData || loading) return;
+        if (!locData || loading || isInitializeApp) return;
 
 
         setState(STATE.PROCCESSING_LOC_DATA);
-        setMapLocKeyByCode(groupKeysByCode(locData));
+        dispatchLocKeyByCode({ type: "INIT_LOC_KEY_CODE", payload: groupKeysByCode(locData)});
         setState(STATE.APP_SCRIPTS_INIT);
         (async () => {
             try {
                 // Отримання екземпляра AppScripts
                 const appScripts = await AppScripts.getInstance();
-                const keys: LocalizationSheetKey[] = parseSheetToLocalizationSheetKeys(new Sheet('Блок-Схеми',await appScripts.scripts.getValueSheet('Блок-Схеми')));
-                console.log(keys);
-                console.log(keys[keys.length-1]);
-                // const sheets: Array<Sheet> = await processSheets(appScripts, setState, setProgress);
-                // console.log(sheets);
-                // sheets.forEach(sheet => {
-                //     console.log(parseSheetToLocalizationSheetKeys(sheet));
-                // })
+                const sheets: Array<Sheet> = await processSheets(appScripts, setState, setProgress); // Оброблюємо таблицю
+
+                setState(STATE.PROCESS_KEYS); // Оброблюємо дані з таблиці
+                const keys: LocalizationSheetKey[] = sheets.flatMap(sheet => parseSheetToLocalizationSheetKeys(sheet)); // Парсимо дані в моделі ключів локалізації
+                const groupNamesByVoiceCode: Map<string, string[]> = groupByVoiceKey(keys); // Групуємо імена акторів за голосовими ключами
+                dispatchActorNames({type: "INIT_ACTOR_NAMES", payload: groupNamesByVoiceCode}); // Ініцілізуємо данні
+                console.log(groupNamesByVoiceCode);
+                setInitializeApp(true);
             } catch (e) {
                 console.error('Сталася помилка!!!');
                 console.error(e);
@@ -81,9 +84,9 @@ function useAppInit(): [
             }
         })();
 
-    }, [error, loading, locData]);
+    }, [dispatchActorNames, dispatchLocKeyByCode, error, isInitializeApp, loading, locData]);
 
-    return [isInitializeApp, state, error_msg, progress, mapLocKeyByCode];
+    return [isInitializeApp, state, error_msg, progress];
 }
 
 export default useAppInit;

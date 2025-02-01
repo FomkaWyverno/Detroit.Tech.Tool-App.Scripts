@@ -8,7 +8,7 @@ import { Sheet } from "../models/sheet/Sheet";
 const enum SheetColumnName {
     KEY = 'Key-Translate', // Колонка з ключами локалізації
     CONTAINER_ID = 'Container-ID', // Колонка з ідентифікаторами контейнерів
-    
+    ACTOR = 'Актор' // Колонка з акторами
 }
 
 /**
@@ -27,6 +27,7 @@ export function parseSheetToLocalizationSheetKeys(sheet: Sheet): Array<Localizat
     let startKeyIndexRow: number = 1;
     let currentContainerId: number = getContainerIdFromSheet(sheet, startKeyIndexRow);
     let currentKey: string = getKeyFromSheet(sheet, startKeyIndexRow);
+    let currentActor: string | undefined = getActorFromSheet(sheet, startKeyIndexRow);
 
     if (!currentContainerId || !currentKey) throw new Error(`Bad structure Sheet: "${sheet.getSheetName()}" First row don't has value for Container-ID and Key`);
 
@@ -36,12 +37,13 @@ export function parseSheetToLocalizationSheetKeys(sheet: Sheet): Array<Localizat
 
         if (nextContainerId && nextKey) {
             const sheetRange: Range = sheet.getRange(startKeyIndexRow, 0, i - startKeyIndexRow, numColumnsSheet);
-            const sheetKey: LocalizationSheetKey = new LocalizationSheetKey(sheetRange, currentContainerId, currentKey);                                  
+            const sheetKey: LocalizationSheetKey = new LocalizationSheetKey(sheetRange, currentContainerId, currentKey, currentActor);                                  
             sheetKeys.push(sheetKey);
             
             startKeyIndexRow = i;
             currentContainerId = nextContainerId;
             currentKey = nextKey;
+            currentActor = getActorFromSheet(sheet, i);
 
         } else if (nextContainerId || nextKey) {
             throw new Error(`Bad structure Sheet: "${sheet.getSheetName()}" - Row: ${i+1}. Has only СontainerId or only Key`);
@@ -50,7 +52,7 @@ export function parseSheetToLocalizationSheetKeys(sheet: Sheet): Array<Localizat
 
     // Додаємо останній ключ локалізації
     const sheetRange: Range = sheet.getRange(startKeyIndexRow, 0, sheet.length() - startKeyIndexRow, numColumnsSheet);
-    sheetKeys.push(new LocalizationSheetKey(sheetRange, currentContainerId, currentKey));
+    sheetKeys.push(new LocalizationSheetKey(sheetRange, currentContainerId, currentKey, currentActor));
 
     return sheetKeys;
 }
@@ -77,4 +79,16 @@ function getContainerIdFromSheet(sheet: Sheet, indexRow: number): number {
  */
 function getKeyFromSheet(sheet: Sheet, indexRow: number): string {
     return sheet.getRow(indexRow).getValue(sheet.getColumnByHeaderName(SheetColumnName.KEY));
+}
+
+/**
+ * Отримує `Актор` для заданого рядка аркуша.
+ *
+ * @param {Sheet} sheet Аркуш, з якого потрібно отримати значення.
+ * @param {number} indexRow Індекс рядка (нумерація з 0).
+ * @returns {string | undefined} Значення `Актора` або `undefined` якщо не має колонки .
+ */
+function getActorFromSheet(sheet: Sheet, indexRow: number): string | undefined {
+    if (!sheet.hasHeader(SheetColumnName.ACTOR)) return undefined;
+    return sheet.getValue(indexRow, sheet.getColumnByHeaderName(SheetColumnName.ACTOR));
 }

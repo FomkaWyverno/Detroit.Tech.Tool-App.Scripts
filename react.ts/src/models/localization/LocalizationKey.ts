@@ -1,10 +1,11 @@
+import { getVoiceKey } from "../../utils/LocalizationUtil";
+
 export class LocalizationKey { // Локалізаційний текст, який має всю інформацію про ключ, включно з його ключем та контейнером де він знаходиться.
     public static readonly patternCode = /^!(.+?)! (.+)?/
-    public static readonly patternVoiceKey = /.+?_.+?_.+?_.+?_(.+?)_.+/;
 
     public readonly text: string;
     public readonly code: string;
-    public readonly voiceKey: string;
+    public readonly voiceKey: string | undefined;
     public readonly isVoice: boolean;
 
     /**
@@ -25,7 +26,7 @@ export class LocalizationKey { // Локалізаційний текст, як�
         const {code, text} = LocalizationKey.unpackOriginalText(ogirinalText); 
         this.code = code;
         this.text = text;
-        this.voiceKey = LocalizationKey.getVoiceKey(key);
+        this.voiceKey = getVoiceKey(key);
         this.isVoice = hasLink && linkExists;
     }
 
@@ -42,20 +43,5 @@ export class LocalizationKey { // Локалізаційний текст, як�
         const matches = LocalizationKey.patternCode.exec(originalText);
         if (matches) return {code: matches[1], text: matches[2] ?? ''};
         throw new Error(`Not found code and text for LocalizationKeyText. Original Text - ${originalText}`);
-    }
-
-
-    /**
-     * Повертає голосовий ключ (voiceKey) із заданого ключа локалізації.
-     * Очікується, що ключ має формат: `metaText_metaText_metaText_metaText_VOICE-KEY_metaText`.
-     * Приклад: X0101X_TERRACE_PARTI_PC_X01CONNOR_TRUTH0101V2 - Результат: X01CONNOR
-     * 
-     * @param key Ключ локалізації, що містить голосовий ідентифікатор.
-     * @returns Повертає голосовий ключ або `"-"`, якщо формат ключа не відповідає очікуваному.
-     */
-    private static getVoiceKey(key: string): string {
-        const matches = LocalizationKey.patternVoiceKey.exec(key);
-        if (matches) return matches[1];
-        return '-';
     }
 }
