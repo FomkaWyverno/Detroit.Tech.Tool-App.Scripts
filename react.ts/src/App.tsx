@@ -9,6 +9,7 @@ import { LocalizationKey } from "./models/localization/LocalizationKey";
 import formatTime from "./utils/TimeFormatUtil";
 import { getVideoIdFromURL } from "./utils/YouTubePlayerUtil";
 import { LocKeyByCodeContext } from "./context/LocKeyByCodeContext";
+import { LocSheetKeysContext } from "./context/LocSheetKeysContext";
 
 
 
@@ -21,10 +22,11 @@ export function App() {
     const [containerId, setContainerId] = useState<string | null>(null);
     const [locKey, setLocKey] = useState<string | null>(null);
     const [text, setText] = useState<string | null>(null);
-
+    const [hasInSheet, setHasInSheet] = useState<boolean>(false)
     const [locationKey, setLocationKey] = useState<string | null>(null);
 
     const { locKeyByCode } = useContext(LocKeyByCodeContext);
+    const { locSheetKeysByIdKey } = useContext(LocSheetKeysContext);
 
     const wrapperKeys = useRef<HTMLDivElement>(null);
     useEffect(() => {
@@ -45,12 +47,13 @@ export function App() {
             setContainerId(locKey.containerId.toString());
             setLocKey(locKey.key);
             setText(locKey.text);
+            setHasInSheet(locSheetKeysByIdKey.has(`${locKey.containerId}.${locKey.key}`))
         } else {
             setContainerId(null);
             setLocKey(null);
             setText(null);
         }
-    }, [locKeyByCode]);
+    }, [locKeyByCode, locSheetKeysByIdKey]);
 
     const handleTimeChange = useCallback((youtubeURL: string, time: number) => {
         setContextValue(`https://youtu.be/${getVideoIdFromURL(youtubeURL)}?t=${Math.trunc(time)}`);
@@ -69,7 +72,7 @@ export function App() {
             <YoutubeVideo videoURL={youtubeURL} handleTimeChange={handleTimeChange}/>
             <div ref={wrapperKeys}>
                 <Card component_style={{ width: "515px", maxHeight: keyInfoHeight }}>
-                    <KeyInfo containerId={containerId} locKey={locKey} text={text} locationKey={locationKey}/>
+                    <KeyInfo containerId={containerId} locKey={locKey} text={text} locationKey={locationKey} hasInSheet={hasInSheet}/>
                 </Card>
             </div>
             <InputsContainer

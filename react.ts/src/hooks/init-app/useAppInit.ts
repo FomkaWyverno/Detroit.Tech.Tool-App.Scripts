@@ -2,7 +2,7 @@ import { LocalizationKey } from '../../models/localization/LocalizationKey';
 import { useCallback, useContext, useEffect, useState } from "react";
 import useFetch from "../useFetch";
 import { LocalizationData } from "../../types/localization/localization";
-import { groupByVoiceKey, groupLocKeyTextByCode, mapLocalizationToKeyText } from '../../utils/LocalizationUtil';
+import { groupByVoiceKey, groupLocKeyTextByCode, groupLocSheetKeyByContainerIdAndKey, mapLocalizationToKeyText } from '../../utils/LocalizationUtil';
 import { AppScripts } from '../../services/app-scripts/AppScripts';
 import { Sheet } from '../../models/sheet/Sheet';
 import { parseSheetToLocalizationSheetKeys } from '../../utils/SheetUtil';
@@ -36,7 +36,8 @@ function useAppInit(): [
     state: string,
     error: string,
     progress: number,
-    locKeyByCode: Map<string, LocalizationKey>
+    locKeyByCode: Map<string, LocalizationKey>,
+    locSheetKeysByIdKey: Map<string, LocalizationSheetKey>
 ] {
     const [isInitializeApp, setInitializeApp] = useState<boolean>(false);
     const [state, setState] = useState<string>(STATE.DEFAULT);
@@ -47,8 +48,9 @@ function useAppInit(): [
     const [locData, loading, errorFetch] = useFetch<LocalizationData>(localizationDataURL);
 
     // Оброблені данні таблиці та завантажена локалізація
-    const [locKeyByCode, setLocKeyByCode] = useState<Map<string, LocalizationKey>>(new Map()) // Редюсер який керує Мапою яка має ключ це код, а значення це локалізаційний ключ, з оригінульного файлу
-    const { dispatchActorNames } = useContext(ActorNamesContext);  // Редюсер який керує Мапою яка має ключ це голосовий ключ, а значення це массив імен для цього ключа, з таблиці
+    const [locSheetKeys, setLocSheetKeys] = useState<Map<string,LocalizationSheetKey>>(new Map());
+    const [locSheetKeysByIdKey, setLocSheetKeysByIdKey] = useState<Map<string, LocalizationKey>>(new Map()) // Мапа яка має ключ це код, а значення це локалізаційний ключ, з оригінульного файлу
+    const { dispatchActorNames } = useContext(ActorNamesContext);  // Контекст який керує Мапою яка має ключ це голосовий ключ, а значення це массив імен для цього ключа, з таблиці
 
     useEffect(() => {
         if (errorFetch) {
@@ -61,7 +63,7 @@ function useAppInit(): [
         try { // Виклик функції відбувається, лише тоді коли locData не null тому, ми впевнені, що тут все гаразд буде.
             setState(STATE.PROCCESSING_LOC_DATA);
             const keysGroup = groupKeysByCode(locData!);
-            setLocKeyByCode(keysGroup);
+            setLocSheetKeysByIdKey(keysGroup);
 
             setState(STATE.APP_SCRIPTS_INIT);
             // Отримання екземпляра AppScripts
@@ -70,6 +72,7 @@ function useAppInit(): [
 
             setState(STATE.PROCESS_KEYS); // Оброблюємо дані з таблиці
             const keys: LocalizationSheetKey[] = sheets.flatMap(sheet => parseSheetToLocalizationSheetKeys(sheet)); // Парсимо дані в моделі ключів локалізації
+            setLocSheetKeys(groupLocSheetKeyByContainerIdAndKey(keys));
             const group = groupByVoiceKey(keys);
             console.log(group); 
             dispatchActorNames({type: "INIT_ACTOR_NAMES", payload: group}); // Ініцілізуємо імена акторів
@@ -88,7 +91,7 @@ function useAppInit(): [
 
     }, [loading, locData, isInitializeApp, appInit]);
 
-    return [isInitializeApp, state, error_msg, progress, locKeyByCode];
+    return [isInitializeApp, state, error_msg, progress, locSheetKeysByIdKey, locSheetKeys];
 }
 
 export default useAppInit;

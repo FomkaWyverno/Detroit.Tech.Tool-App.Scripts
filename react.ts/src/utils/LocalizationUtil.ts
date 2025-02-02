@@ -96,3 +96,14 @@ export function groupByVoiceKey(keys: LocalizationSheetKey[]): Map<string, strin
                 }, new Map<string, string[]>()); // Повертаємо порожню мапу як початкове значення
 
 }
+
+/**
+ * Групуємо ключи з таблиці об'єднавши контейнер айді з ключом локалізації через крапку. Приклад - `2348.GUI_MENU_FLOWCHART_MESSAGE`
+ * @param keys Ключі локалізації
+ * @returns Погруповану мапу де ключ це рядок поєднання айді контейнера з ключем, а значення сам ключ локалізації у таблиці
+ */
+export function groupLocSheetKeyByContainerIdAndKey(keys: Array<LocalizationSheetKey>): Map<string, LocalizationSheetKey> {
+    return keys.reduce((map, key) => {
+        return map.set(`${key.containerId}.${key.key}`, key);;
+    }, new Map<string, LocalizationSheetKey>());
+}

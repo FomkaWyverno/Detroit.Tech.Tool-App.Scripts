@@ -10,7 +10,7 @@ interface IKeyInfoProps {
     containerId?: string | null
     locKey?: string | null
     text?: string | null
-    hasInTable?: boolean | null
+    hasInSheet?: boolean | null
     locationKey?: string | null
 }
 
@@ -22,7 +22,7 @@ function KeyInfo({
     containerId,
     locKey,
     text,
-    hasInTable,
+    hasInSheet,
     locationKey,
 }: IKeyInfoProps) {
 
@@ -38,7 +38,7 @@ function KeyInfo({
             <InfoBlock label="ContrainerId:" text={containerId ?? "-"}/>
             <InfoBlock label="Key:" text={locKey ?? "-"}/>
             <InfoBlock label="Text:" text={text ?? "-"} wordBreak='break-word' />
-            <BooleanBlockInfo label="Ключ присутній у таблиці?" trueText='Ні' falseText='Так' state={hasInTable}/>
+            <BooleanBlockInfo label="Ключ присутній у таблиці?" trueText='Ні' falseText='Так' state={hasInSheet}/>
             <InfoBlock label="Місцезнаходження ключа:" text={locationKey ?? "-"}/>
         </div>
     )
