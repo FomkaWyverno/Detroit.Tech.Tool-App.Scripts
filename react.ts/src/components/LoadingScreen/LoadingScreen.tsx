@@ -1,6 +1,8 @@
+import { useEffect } from 'react'
 import Icon_Loader from '../../assets/led_spinner.svg?react'
 import style from './LoadingScreen.module.scss'
 import ProgressBar from './ProgressBar/ProgressBar'
+import SoundManager from '../../utils/SoundManager'
 
 interface ILoadingScreen {
     state: string
@@ -13,6 +15,17 @@ function LoadingScreen({
     error_msg,
     progress
 }: ILoadingScreen) {
+
+    useEffect(() => {
+        if (error_msg) {
+            SoundManager.playLoopError();
+
+            return () => {
+                SoundManager.stopLoopError();
+            }
+        }
+    } ,[error_msg])
+
     return (
         <div className={style.loader_container}>
             <div>
