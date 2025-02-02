@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 function useFetch<T>(url: string): [T | null, boolean, string | null] {
     const [data, setData] = useState<T | null>(null);
-    const [error, setError] = useState<string | null>(null);
+    const [errorFetch, setErrorFetch] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
 
@@ -19,9 +19,9 @@ function useFetch<T>(url: string): [T | null, boolean, string | null] {
                 console.log('Fetched data')
             } catch (error: unknown) {
                 if (error instanceof Error) {
-                    setError(error.message);
+                    setErrorFetch(error.message);
                 } else {
-                    setError(String(error));
+                    setErrorFetch(String(error));
                 }
             } finally {
                 setLoading(false);
@@ -31,7 +31,7 @@ function useFetch<T>(url: string): [T | null, boolean, string | null] {
         fetchData();
     }, [url]);
 
-    return [data, loading, error];
+    return [data, loading, errorFetch];
 }
 
 export default useFetch;

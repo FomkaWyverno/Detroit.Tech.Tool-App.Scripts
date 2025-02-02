@@ -9,6 +9,12 @@ import { AppScriptsFunctions } from './AppScriptsFunctions';
  * Використовує повідомлення між вікнами для обміну даними та запитами.
  */
 export class AppScripts {
+    
+    
+    /**
+     * Кількість одночасних викликів до AppScripts можливо здійснити
+     */
+    public static readonly SIMULTANEOUS_CALLS = 30;
      /**
      * URL для відправки повідомлень у Google Apps Script.
      */

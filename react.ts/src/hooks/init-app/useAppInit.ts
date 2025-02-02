@@ -1,5 +1,5 @@
 import { LocalizationKey } from '../../models/localization/LocalizationKey';
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useFetch from "../useFetch";
 import { LocalizationData } from "../../types/localization/localization";
 import { groupByVoiceKey, groupLocKeyTextByCode, mapLocalizationToKeyText } from '../../utils/LocalizationUtil';
@@ -9,6 +9,8 @@ import { parseSheetToLocalizationSheetKeys } from '../../utils/SheetUtil';
 import { LocalizationSheetKey } from '../../models/localization/LocalizationSheetKey';
 import { useReducerLocKeyCode } from '../reducers/reducerLocKeyCode';
 import { useReducerActorNames } from '../reducers/reducerActorNames';
+import { delay } from '../../utils/Utils';
+import { PromiseUtils } from '../../utils/PromiseUtils';
 
 const localizationDataURL = 'https://raw.githubusercontent.com/FomkaWyverno/Detroit.Tech.Tool-App.Scripts.github.io/refs/heads/react.js/Detroit_LocalizationRegistry.json';
 
@@ -17,7 +19,7 @@ const enum STATE {
     PROCCESSING_LOC_DATA = 'Етап-1: Оброблюємо локалізаційні ключі! 🔄',
     APP_SCRIPTS_INIT = 'Етап-2: Ініцілізації з App-Scripts ⚙️',
     APP_SCRIPTS_SHEETS_NAMES = 'Етап-2: Отримуємо назви аркушів. 📑',
-    APP_SCRIPTS_SHEET_GET_VALUES = 'Етап-2: Читаємо аркуш 🔍:',
+    APP_SCRIPTS_SHEET_GET_VALUES = 'Етап-2: Читаємо аркуші 🔍:',
     PROCESS_KEYS = 'Етап-3: Опрацьовуємо отриману інформацію 🧩🛠️',
     ERROR = "Сталась помилка! 😩🚨"
 }
@@ -42,49 +44,48 @@ function useAppInit(): [
     const [progress, setProgress] = useState<number>(-1);
 
     // Сховище для локалізаційних ключів
-    const [locData, loading, error] = useFetch<LocalizationData>(localizationDataURL);
+    const [locData, loading, errorFetch] = useFetch<LocalizationData>(localizationDataURL);
 
     // Оброблені данні таблиці та завантажена локалізація
     const [, dispatchLocKeyByCode] = useReducerLocKeyCode() // Редюсер який керує Мапою яка має ключ це код, а значення це локалізаційний ключ, з оригінульного файлу
     const [, dispatchActorNames] = useReducerActorNames();  // Редюсер який керує Мапою яка має ключ це голосовий ключ, а значення це массив імен для цього ключа, з таблиці
 
     useEffect(() => {
-        if (error) {
+        if (errorFetch) {
             setState(STATE.ERROR);
-            setErrorMsg(error);
-            return;
-        } 
-        if (!locData || loading || isInitializeApp) return;
+            setErrorMsg(errorFetch);
+        }
+    },[errorFetch]);
 
+    const appInit = useCallback(async () => {
+        try { // Виклик функції відбувається, лише тоді коли locData не null тому, ми впевнені, що тут все гаразд буде.
+            setState(STATE.PROCCESSING_LOC_DATA);
+            dispatchLocKeyByCode({ type: "INIT_LOC_KEY_CODE", payload: groupKeysByCode(locData!)});
 
-        setState(STATE.PROCCESSING_LOC_DATA);
-        dispatchLocKeyByCode({ type: "INIT_LOC_KEY_CODE", payload: groupKeysByCode(locData)});
-        setState(STATE.APP_SCRIPTS_INIT);
-        (async () => {
-            try {
-                // Отримання екземпляра AppScripts
-                const appScripts = await AppScripts.getInstance();
-                const sheets: Array<Sheet> = await processSheets(appScripts, setState, setProgress); // Оброблюємо таблицю
+            setState(STATE.APP_SCRIPTS_INIT);
+            // Отримання екземпляра AppScripts
+            const appScripts = await AppScripts.getInstance();
+            const sheets: Array<Sheet> = await processSheets(appScripts, setState, setProgress); // Оброблюємо таблицю
 
-                setState(STATE.PROCESS_KEYS); // Оброблюємо дані з таблиці
-                const keys: LocalizationSheetKey[] = sheets.flatMap(sheet => parseSheetToLocalizationSheetKeys(sheet)); // Парсимо дані в моделі ключів локалізації
-                const groupNamesByVoiceCode: Map<string, string[]> = groupByVoiceKey(keys); // Групуємо імена акторів за голосовими ключами
-                dispatchActorNames({type: "INIT_ACTOR_NAMES", payload: groupNamesByVoiceCode}); // Ініцілізуємо данні
-                console.log(groupNamesByVoiceCode);
-                setInitializeApp(true);
-            } catch (e) {
-                console.error('Сталася помилка!!!');
-                console.error(e);
-                setState(STATE.ERROR);
-                if (e instanceof Error) {
-                    setErrorMsg(e.message);
-                } else {
-                    setErrorMsg(String(e));
-                }
-            }
-        })();
+            setState(STATE.PROCESS_KEYS); // Оброблюємо дані з таблиці
+            const keys: LocalizationSheetKey[] = sheets.flatMap(sheet => parseSheetToLocalizationSheetKeys(sheet)); // Парсимо дані в моделі ключів локалізації
+            const group = groupByVoiceKey(keys);
+            console.log(group); 
+            dispatchActorNames({type: "INIT_ACTOR_NAMES", payload: group}); // Ініцілізуємо імена акторів
 
-    }, [dispatchActorNames, dispatchLocKeyByCode, error, isInitializeApp, loading, locData]);
+            setInitializeApp(true);
+        } catch (e) {
+            console.error('Сталася помилка!!!');
+            console.error(e);
+            setState(STATE.ERROR);
+            setErrorMsg(e instanceof Error ? e.message : String(e));
+        }
+    }, [dispatchActorNames, dispatchLocKeyByCode, locData]);
+
+    useEffect(() => {
+        if (!loading && locData && !isInitializeApp) appInit();
+
+    }, [loading, locData, isInitializeApp, appInit]);
 
     return [isInitializeApp, state, error_msg, progress];
 }
@@ -98,10 +99,7 @@ export default useAppInit;
  * @returns {Map<string, LocalizationKey>} Мапа локалізаційних ключів, згрупованих за кодами.
  */
 function groupKeysByCode(locData: LocalizationData): Map<string, LocalizationKey> {
-    const keys: Array<LocalizationKey> = mapLocalizationToKeyText(locData);
-    const groupMap: Map<string, LocalizationKey> = groupLocKeyTextByCode(keys)
-
-    return groupMap;
+    return groupLocKeyTextByCode(mapLocalizationToKeyText(locData));
 }
 
 async function processSheets(
@@ -112,22 +110,26 @@ async function processSheets(
     setState(STATE.APP_SCRIPTS_SHEETS_NAMES);
 
     // Отримання назв аркушів
-    const sheetsNames: Array<string> = await appScripts.scripts.getSheetNames();
+    const sheetsNames: string[] = await appScripts.scripts.getSheetNames();
     console.log(sheetsNames);
 
     setProgress(0);
     const total = sheetsNames.length;
-    const sheets: Array<Sheet> = [];
-    // Перебір кожного аркуша та завантаження його вмісту
-    for (let i = 0; i < total; i++) {
-        const sheetName = sheetsNames[i];
-        setState(`${STATE.APP_SCRIPTS_SHEET_GET_VALUES} "${sheetName}" ${i + 1} з ${total}`);
-        const sheetValue: string[][] = await appScripts.scripts.getValueSheet(sheetName);
-        setProgress((i + 1) / total);
-        if (!sheetValue) throw new Error(`Аркуш: "${sheetName}" немає вмісту!`);
-        sheets.push(new Sheet(sheetName, sheetValue));
+    let completed = 0;
+
+    const processSheet = async (sheetName: string): Promise<Sheet> => {
+        const sheetValue: string[][] = await appScripts.scripts.getValueSheet(sheetName); // Отримуємо значення з таблиці з AppScripts
+        completed++; // Збільшуємо кількість лічильник аркушів з яких отримано вміст
+        setState(`${STATE.APP_SCRIPTS_SHEET_GET_VALUES} ${completed} з ${total}`); // Встановлюємо стан, для сповіщення користувача, скільки вже опрацьовано аркушів
+        setProgress(completed / total); // Встановлюємо новий прогресс
+        if (!sheetValue) throw new Error(`Аркуш: "${sheetName}" немає вмісту!`); // Якщо значення не прийшо, сповіщуємо про помилку
+        return new Sheet(sheetName, sheetValue); // Повертаємо Аркуш.
     }
+
+    const sheets: Sheet[] = await PromiseUtils.allWithLimit<Sheet>(sheetsNames.map(sheetName => () => processSheet(sheetName)), AppScripts.SIMULTANEOUS_CALLS);
+
+    await delay(2000);
     // Обнулення прогресу після завершення процесу
-    setTimeout(() => setProgress(-1), 2000);
+    setProgress(-1)
     return sheets;
 }
