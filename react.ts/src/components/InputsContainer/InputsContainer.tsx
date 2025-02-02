@@ -23,7 +23,6 @@ function InputsContainer({
     context_value,
     timing_value
 }: IInputsContainer) {
-
     return (
         <div className={style.inputs_container}>
             <InputText id="youtube-link-input" placeholder="Посилання на Youtube" onChange={youtubeLinkOnChange }/>

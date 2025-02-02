@@ -2,7 +2,7 @@ import style from "./InfoBlock.module.scss"
 
 interface IInfoBlockProps {
     label: string
-    text?: string
+    text?: string | null
     wordBreak?: 'normal' | 'break-all' | 'keep-all' | 'break-word' 
     
 }

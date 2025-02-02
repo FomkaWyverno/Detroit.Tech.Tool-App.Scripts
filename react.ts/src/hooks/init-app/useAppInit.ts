@@ -1,5 +1,5 @@
 import { LocalizationKey } from '../../models/localization/LocalizationKey';
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import useFetch from "../useFetch";
 import { LocalizationData } from "../../types/localization/localization";
 import { groupByVoiceKey, groupLocKeyTextByCode, mapLocalizationToKeyText } from '../../utils/LocalizationUtil';
@@ -7,10 +7,9 @@ import { AppScripts } from '../../services/app-scripts/AppScripts';
 import { Sheet } from '../../models/sheet/Sheet';
 import { parseSheetToLocalizationSheetKeys } from '../../utils/SheetUtil';
 import { LocalizationSheetKey } from '../../models/localization/LocalizationSheetKey';
-import { useReducerLocKeyCode } from '../reducers/reducerLocKeyCode';
-import { useReducerActorNames } from '../reducers/reducerActorNames';
 import { delay } from '../../utils/Utils';
 import { PromiseUtils } from '../../utils/PromiseUtils';
+import { ActorNamesContext } from '../../context/ActorNamesContex';
 
 const localizationDataURL = 'https://raw.githubusercontent.com/FomkaWyverno/Detroit.Tech.Tool-App.Scripts.github.io/refs/heads/react.js/Detroit_LocalizationRegistry.json';
 
@@ -36,7 +35,8 @@ function useAppInit(): [
     isInitializeApp: boolean,
     state: string,
     error: string,
-    progress: number
+    progress: number,
+    locKeyByCode: Map<string, LocalizationKey>
 ] {
     const [isInitializeApp, setInitializeApp] = useState<boolean>(false);
     const [state, setState] = useState<string>(STATE.DEFAULT);
@@ -47,8 +47,8 @@ function useAppInit(): [
     const [locData, loading, errorFetch] = useFetch<LocalizationData>(localizationDataURL);
 
     // Оброблені данні таблиці та завантажена локалізація
-    const [, dispatchLocKeyByCode] = useReducerLocKeyCode() // Редюсер який керує Мапою яка має ключ це код, а значення це локалізаційний ключ, з оригінульного файлу
-    const [, dispatchActorNames] = useReducerActorNames();  // Редюсер який керує Мапою яка має ключ це голосовий ключ, а значення це массив імен для цього ключа, з таблиці
+    const [locKeyByCode, setLocKeyByCode] = useState<Map<string, LocalizationKey>>(new Map()) // Редюсер який керує Мапою яка має ключ це код, а значення це локалізаційний ключ, з оригінульного файлу
+    const { dispatchActorNames } = useContext(ActorNamesContext);  // Редюсер який керує Мапою яка має ключ це голосовий ключ, а значення це массив імен для цього ключа, з таблиці
 
     useEffect(() => {
         if (errorFetch) {
@@ -60,7 +60,8 @@ function useAppInit(): [
     const appInit = useCallback(async () => {
         try { // Виклик функції відбувається, лише тоді коли locData не null тому, ми впевнені, що тут все гаразд буде.
             setState(STATE.PROCCESSING_LOC_DATA);
-            dispatchLocKeyByCode({ type: "INIT_LOC_KEY_CODE", payload: groupKeysByCode(locData!)});
+            const keysGroup = groupKeysByCode(locData!);
+            setLocKeyByCode(keysGroup);
 
             setState(STATE.APP_SCRIPTS_INIT);
             // Отримання екземпляра AppScripts
@@ -80,14 +81,14 @@ function useAppInit(): [
             setState(STATE.ERROR);
             setErrorMsg(e instanceof Error ? e.message : String(e));
         }
-    }, [dispatchActorNames, dispatchLocKeyByCode, locData]);
+    }, [dispatchActorNames, locData]);
 
     useEffect(() => {
         if (!loading && locData && !isInitializeApp) appInit();
 
     }, [loading, locData, isInitializeApp, appInit]);
 
-    return [isInitializeApp, state, error_msg, progress];
+    return [isInitializeApp, state, error_msg, progress, locKeyByCode];
 }
 
 export default useAppInit;
