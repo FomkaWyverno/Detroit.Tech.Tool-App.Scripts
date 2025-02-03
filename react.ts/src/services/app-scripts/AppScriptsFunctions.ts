@@ -57,4 +57,19 @@ export class AppScriptsFunctions {
     public getValueSheet(sheetName: string): Promise<string[][]> {
         return this.appScripts.sendToAppScript<string[][]>('getValueSheet', this.timeout, sheetName);
     }
+    
+
+
+    /**
+     * Відображає вказаний діапазон клітинок у Google Таблиці.
+     * 
+     * @param {string} sheetName Назва аркуша, в якому потрібно виділити діапазон.
+     * @param {number} indexRow Індекс початкового рядка (починається з 1).
+     * @param {number} indexColumn Індекс початкової колонки (починається з 1).
+     * @param {number} numRows Кількість рядків у діапазоні.
+     * @param {number} numColumns Кількість колонок у діапазоні.
+     */
+    public showRange(sheetName: string, indexRow: number, indexColumn: number, numRows: number, numColumns: number): Promise<void> {
+        return this.appScripts.sendToAppScript<void>('showRange', this.timeout, sheetName, indexRow, indexColumn, numRows, numColumns);
+    }
 }
