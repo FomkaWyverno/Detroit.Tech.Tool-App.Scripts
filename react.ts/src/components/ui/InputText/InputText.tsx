@@ -31,8 +31,8 @@ function InputText({
     value_input,
     onChange
 }: IInput) {
-    const onMouseEnterHandler = () => SoundManager.playHoverSound();
-    const onClickHandler = () => SoundManager.playClickSound();
+    const onMouseEnterHandler = () => SoundManager.playHoverSound(0.2);
+    const onClickHandler = () => SoundManager.playClickSound(0.2);
 
     return (
         <div className={`${style.container_input} ${className}`}>
