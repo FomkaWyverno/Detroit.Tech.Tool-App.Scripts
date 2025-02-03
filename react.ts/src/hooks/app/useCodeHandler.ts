@@ -3,6 +3,7 @@ import { LocKeyByCodeContext } from "../../context/LocKeyByCodeContext";
 import { LocSheetKeysContext } from "../../context/LocSheetKeysContext";
 import { LocalizationKey } from "../../models/localization/LocalizationKey";
 import { LocalizationSheetKey } from "../../models/localization/LocalizationSheetKey";
+import { getVoiceKey } from "../../utils/LocalizationUtil";
 
 
 /**
@@ -21,7 +22,9 @@ function useCodeHandler(): {
     locKey: string | null,
     text: string | null,
     hasInSheet: boolean,
-    locationKey: string | null,
+    voiceCode: string | null,
+    locKeyModel: LocalizationKey | null,
+    locSheetKeyModel: LocalizationSheetKey | null,
     codeOnChange: (e: ChangeEvent<HTMLInputElement>) => void
 } {
     // Локальні стани для збереження даних про локалізаційний ключ
@@ -29,7 +32,9 @@ function useCodeHandler(): {
     const [locKey, setLocKey] = useState<string | null>(null);
     const [text, setText] = useState<string | null>(null);
     const [hasInSheet, setHasInSheet] = useState<boolean>(false)
-    const [locationKey, setLocationKey] = useState<string | null>(null);
+    const [locKeyModel, setLocKeyModel] = useState<LocalizationKey | null>(null);
+    const [locSheetKeyModel, setLocSheetKeyModel] = useState<LocalizationSheetKey | null>(null);
+    const [voiceCode, setVoiceCode] = useState<string | null>(null);  
 
     // Контексти для отримання даних про ключі локалізації
     const { locKeyByCode } = useContext(LocKeyByCodeContext);
@@ -46,22 +51,31 @@ function useCodeHandler(): {
             setLocKey(localizationKey.key);
             setText(localizationKey.text);
             setHasInSheet(locSheetKeysByIdKey.has(localizationKey.getUniquiKey()));
+            setLocKeyModel(localizationKey);
             if (locSheetKeysByIdKey.has(localizationKey.getUniquiKey())) {
                 const locSheetKey: LocalizationSheetKey | undefined = locSheetKeysByIdKey.get(localizationKey.getUniquiKey());
                 if (locSheetKey) {
-                    setLocationKey(locSheetKey.locationKey.toA1Notation());
+                    setLocSheetKeyModel(locSheetKey);
                     console.log(locSheetKey);
                 }
             } else {
-                setLocationKey(null);
+                setLocSheetKeyModel(null);
+            }
+
+            if (localizationKey.isVoice) { // Якщо новий ключ це голосовий локалізаційний ключ
+                setVoiceCode(getVoiceKey(localizationKey.key) ?? null); // Встановлюємо голосовий ключ
+            } else {
+                setVoiceCode(null); // Якщо це текстовий локалізаційний ключ
             }
         } else {
-            // Якщо ключ не знайдено, скидаємо всі значення
+            // Якщо локалізаційного ключа не знайдено, скидаємо всі значення
             setContainerId(null);
             setLocKey(null);
             setText(null);
-            setLocationKey(null);
             setHasInSheet(false);
+            setVoiceCode(null);
+            setLocKeyModel(null);
+            setLocSheetKeyModel(null);
         }
     }, [locKeyByCode, locSheetKeysByIdKey]);
 
@@ -70,7 +84,9 @@ function useCodeHandler(): {
         locKey,
         text,
         hasInSheet,
-        locationKey,
+        voiceCode,
+        locKeyModel,
+        locSheetKeyModel,
         codeOnChange
     };
 }
