@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react"
+import { MouseEvent } from "react";
 import ButtonAddInSheet from "./ButtonAddInSheet/ButtonAddInSheet"
 import ButtonSearchKeyInSheet from "./ButtonSearchKeyInSheet/ButtonSearchKeyInSheet"
 import GlossaryNames from "./GlossaryNames/GlossaryNames";
@@ -7,10 +8,14 @@ import style from './ControlingPanel.module.scss'
 
 interface IControlingPanel {
     voiceCode: string | null
+    onClickAddInSheetButton: (e: MouseEvent<HTMLButtonElement>) => void
+    onClickSearchButton: (e: MouseEvent<HTMLButtonElement>) => void
 }
 
 function ControlingPanel({
-    voiceCode
+    voiceCode,
+    onClickAddInSheetButton,
+    onClickSearchButton
 }: IControlingPanel) {
     const panelRef = useRef<HTMLDivElement>(null);
     const buttonsWrapperRef = useRef<HTMLDivElement>(null);
@@ -31,8 +36,8 @@ function ControlingPanel({
     return (
         <div ref={panelRef} className={style.controling_panel}>
             <div ref={buttonsWrapperRef} className={style.controling_wrapper}>
-                <ButtonAddInSheet/>
-                <ButtonSearchKeyInSheet/>
+                <ButtonAddInSheet onClick={onClickAddInSheetButton}/>
+                <ButtonSearchKeyInSheet onClick={onClickSearchButton}/>
             </div>
             <div ref={glossaryWrapperRef} className={style.controling_wrapper} style={{flexGrow: 1}}>
                 <GlossaryNames height={glossaryHeight} voiceCode={voiceCode}/>
