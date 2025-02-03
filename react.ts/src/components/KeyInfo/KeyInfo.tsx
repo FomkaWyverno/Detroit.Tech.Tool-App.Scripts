@@ -39,7 +39,7 @@ function KeyInfo({
             <InfoBlock label="Key:" text={locKey ?? "-"}/>
             <InfoBlock label="Text:" text={text ?? "-"} wordBreak='break-word' />
             <BooleanBlockInfo label="Ключ присутній у таблиці?" trueText='Ні' falseText='Так' state={!hasInSheet}/>
-            <InfoBlock label="Місцезнаходження ключа:" text={locationKey ?? "-"}/>
+            <InfoBlock label="Місцезнаходження ключа:" wordBreak='break-word' text={locationKey ?? "-"}/>
         </div>
     )
 }
