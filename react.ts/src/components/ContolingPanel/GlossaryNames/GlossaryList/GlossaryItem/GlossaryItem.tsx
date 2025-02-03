@@ -1,4 +1,4 @@
-import { MouseEvent, MouseEventHandler, useCallback } from "react"
+import { MouseEvent, useCallback } from "react"
 import style from "./GlossaryItem.module.scss"
 import SoundManager from "../../../../../utils/SoundManager"
 
