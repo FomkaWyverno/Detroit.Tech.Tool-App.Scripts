@@ -7,12 +7,12 @@ import useYouTubePlayerError from "../../hooks/youtube/events/useYouTubePlayerEr
 
 interface IYoutubeVideo {
     videoURL?: string
-    handleTimeChange: (youtubeURL: string, time: number) => void
+    handleTimeOnChange: (youtubeURL: string, time: number) => void
 }
 
 function YoutubeVideo({
     videoURL = '',
-    handleTimeChange
+    handleTimeOnChange: handleTimeChange
 }: IYoutubeVideo) {
     const [player, onReadyHandler] = useYouTubePlayerOnReady();
     useYouTubeURLSync(player, videoURL);

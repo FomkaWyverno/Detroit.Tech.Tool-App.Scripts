@@ -5,7 +5,13 @@ import GlossaryNames from "./GlossaryNames/GlossaryNames";
 import style from './ControlingPanel.module.scss'
 
 
-function ControlingPanel() {
+interface IControlingPanel {
+    voiceCode: string | null
+}
+
+function ControlingPanel({
+    voiceCode
+}: IControlingPanel) {
     const panelRef = useRef<HTMLDivElement>(null);
     const buttonsWrapperRef = useRef<HTMLDivElement>(null);
     const glossaryWrapperRef = useRef<HTMLDivElement>(null);
@@ -29,7 +35,7 @@ function ControlingPanel() {
                 <ButtonSearchKeyInSheet/>
             </div>
             <div ref={glossaryWrapperRef} className={style.controling_wrapper} style={{flexGrow: 1}}>
-                <GlossaryNames height={glossaryHeight}/>
+                <GlossaryNames height={glossaryHeight} voiceCode={voiceCode}/>
             </div>
         </div>
     )

@@ -104,6 +104,6 @@ export function groupByVoiceKey(keys: LocalizationSheetKey[]): Map<string, strin
  */
 export function groupLocSheetKeyByContainerIdAndKey(keys: Array<LocalizationSheetKey>): Map<string, LocalizationSheetKey> {
     return keys.reduce((map, key) => {
-        return map.set(`${key.containerId}.${key.key}`, key);;
+        return map.set(key.getUniquiKey(), key);;
     }, new Map<string, LocalizationSheetKey>());
 }

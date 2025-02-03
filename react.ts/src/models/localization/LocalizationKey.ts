@@ -1,6 +1,7 @@
 import { getVoiceKey } from "../../utils/LocalizationUtil";
+import { BaseLocalizationKey } from "./BaseLocalizationKey";
 
-export class LocalizationKey { // Локалізаційний текст, який має всю інформацію про ключ, включно з його ключем та контейнером де він знаходиться.
+export class LocalizationKey extends BaseLocalizationKey { // Локалізаційний текст, який має всю інформацію про ключ, включно з його ключем та контейнером де він знаходиться.
     public static readonly patternCode = /^!(.+?)! (.+)?/
 
     public readonly text: string;
@@ -17,12 +18,13 @@ export class LocalizationKey { // Локалізаційний текст, як�
      * @param linkExists зі структури локалізації визначає чи є існуючи посилання на аудіо чи щось таке.
      */
     constructor(
-        public readonly containerId: number,
-        public readonly key: string,
+        containerId: number,
+        key: string,
         public readonly ogirinalText: string,
         hasLink: boolean,
         linkExists: boolean
     ) {
+        super(containerId, key);
         const {code, text} = LocalizationKey.unpackOriginalText(ogirinalText); 
         this.code = code;
         this.text = text;

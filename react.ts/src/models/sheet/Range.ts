@@ -20,6 +20,36 @@ export class Range {
         public readonly indexRow: number,
         public readonly indexColumn: number,
         public readonly numRows: number = 1,
-        public readonly numColums: number = 1
+        public readonly numColumns: number = 1
     ) {}
+
+    private toNumRow(indexRow: number): number {
+        return indexRow + 1;
+    }
+
+    private toColumnLetter(indexColumn: number): string {
+        let letter = '';
+        let col = indexColumn + 1;
+
+        while (col > 0) {
+            col--;
+            letter = String.fromCharCode(65 + (col % 26)) + letter;
+            col = Math.floor(col / 26);
+        }
+        return letter;
+    }
+
+    public toA1Notation(): string {
+        const startColumn = this.toColumnLetter(this.indexColumn);
+        const startRow = this.toNumRow(this.indexRow);
+
+        if (this.numColumns == 1 && this.numRows == 1) {
+            return `'${this.sheet.getSheetName()}'!${startColumn}${startRow}`;
+        }
+
+        const endColumn = this.toColumnLetter(this.indexColumn + this.numColumns - 1);
+        const endRow = this.toNumRow(this.indexRow + this.numRows - 1);
+
+        return `'${this.sheet.getSheetName()}'!${startColumn}${startRow}:${endColumn}${endRow}`;
+    }
 }

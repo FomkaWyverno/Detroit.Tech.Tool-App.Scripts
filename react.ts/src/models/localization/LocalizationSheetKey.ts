@@ -1,9 +1,10 @@
 import { Range } from './../sheet/Range';
+import { BaseLocalizationKey } from './BaseLocalizationKey';
 
 /**
  * Представляє ключ локалізації у електронному аркуші.
  */
-export class LocalizationSheetKey {
+export class LocalizationSheetKey extends BaseLocalizationKey {
 
     /**
      * Створює новий екземпляр `LocalizationSheetKey`.
@@ -15,8 +16,10 @@ export class LocalizationSheetKey {
      */
     constructor(
         public readonly locationKey: Range,
-        public readonly containerId: number,
-        public readonly key: string,
+        containerId: number,
+        key: string,
         public readonly actorName: string | undefined
-    ) {}
+    ) {
+        super(containerId, key);
+    }
 }

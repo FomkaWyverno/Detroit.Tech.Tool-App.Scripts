@@ -4,10 +4,12 @@ import style from "./GlossaryName.module.scss"
 
 interface IGlossaryNames {
     height?: string
+    voiceCode: string | null 
 }
 
 function GlossaryNames({
-    height = 'auto'
+    height = 'auto',
+    voiceCode
 }: IGlossaryNames) {
     const [heightList, setHeightList] = useState<string>('auto');
     const headerRef = useRef<HTMLDivElement>(null);
@@ -32,7 +34,7 @@ function GlossaryNames({
                     <span className={style.glossary_names__header__details_code__code}>-</span>
                 </div>
             </div>
-            <GlossaryList height={heightList} />
+            <GlossaryList height={heightList} voiceCode={voiceCode}/>
         </div>
     )
 }

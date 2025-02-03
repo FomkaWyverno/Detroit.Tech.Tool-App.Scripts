@@ -1,16 +1,23 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import GlossaryItem from "./GlossaryItem/GlossaryItem";
 import style from "./GlossaryList.module.scss";
+import { ActorNamesContext } from "../../../../context/ActorNamesContex";
 
 interface IGlossaryList {
     height?: string
+    voiceCode: string | null
 }
 
 function GlossaryList({
-    height = 'auto'
+    height = 'auto',
+    voiceCode
 }: IGlossaryList) {
     const [listHeight, setListHeight] = useState('auto');
     const listRef = useRef<HTMLUListElement>(null);
+    const [listNames, setListNames] = useState<string[]>([]);
+
+    const { actorNamesByVoiceKey } = useContext(ActorNamesContext);
+
 
     useEffect(() => { // Розрахунок висоти елемент <ul>
         if (listRef.current && height !== 'auto') { // Якщо референс Листа є та висота не Авто
@@ -27,15 +34,18 @@ function GlossaryList({
         }
     },[height]);
 
-    const items = new Map<string, string[]>([
-        ["X01ANDROID", ["Джон", "Сара", "Люсі","Джон", "Сара", "Люсі","Джон", "Сара", "Люсі","Джон", "Сара", "Люсі","Джон", "Сара", "Люсі"]],
-    ]);
+    useEffect(() => {
+        if (!voiceCode || !actorNamesByVoiceKey.has(voiceCode)) {
+            setListNames([]);
+            return;
+        }
 
-    const key = items.get('X01ANDROID');
+        setListNames(actorNamesByVoiceKey.get(voiceCode) || [])
+    }, [voiceCode, actorNamesByVoiceKey]);
 
     return (
         <ul ref={listRef} className={`scrolling-y ${style.glossary_list}`} style={{height: listHeight}}>
-            {key?.map((name, index) => <GlossaryItem index={index} name={name}/>)}
+            {listNames.map((name) => <GlossaryItem key={`${voiceCode}.${name}`} name={name}/>)}
         </ul>        
     )
 }

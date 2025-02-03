@@ -1,32 +1,22 @@
-import { useState, useContext, useRef, useEffect, useCallback, ChangeEvent } from "react";
+import { useState, useRef, useEffect } from "react";
 import Card from "./components/Card/Card";
 import ControlingPanel from "./components/ContolingPanel/ControlingPanel";
 import GridLayout from "./components/GridLayout/GridLayout";
 import InputsContainer from "./components/InputsContainer/InputsContainer";
 import KeyInfo from "./components/KeyInfo/KeyInfo";
 import YoutubeVideo from "./components/YoutubeVideo/YoutubeVideo";
-import { LocalizationKey } from "./models/localization/LocalizationKey";
-import formatTime from "./utils/TimeFormatUtil";
-import { getVideoIdFromURL } from "./utils/YouTubePlayerUtil";
-import { LocKeyByCodeContext } from "./context/LocKeyByCodeContext";
-import { LocSheetKeysContext } from "./context/LocSheetKeysContext";
+import useCodeHandler from "./hooks/app/useCodeHandler";
+import useYoutubeHandler from "./hooks/app/useYoutubeHandler";
+import useVoiceCodeHandler from "./hooks/app/useVoiceCodeHandler";
 
 
 
 export function App() {
     const [keyInfoHeight, setKeyInfoHeight] = useState<string>();
-    const [contextValue, setContextValue] = useState<string>('');
-    const [timing, setTiming] = useState<string>('');
-    const [youtubeURL, setYoutubeURL] = useState('');
 
-    const [containerId, setContainerId] = useState<string | null>(null);
-    const [locKey, setLocKey] = useState<string | null>(null);
-    const [text, setText] = useState<string | null>(null);
-    const [hasInSheet, setHasInSheet] = useState<boolean>(false)
-    const [locationKey, setLocationKey] = useState<string | null>(null);
-
-    const { locKeyByCode } = useContext(LocKeyByCodeContext);
-    const { locSheetKeysByIdKey } = useContext(LocSheetKeysContext);
+    const { youtubeURL, contextValue, timing, youtubeLinkOnChange, handleTimeOnChange, contextOnChange, timingOnChange } = useYoutubeHandler();
+    const { containerId, locKey, text, hasInSheet, locationKey, codeOnChange } = useCodeHandler();
+    const { voiceCode } = useVoiceCodeHandler(locKey);
 
     const wrapperKeys = useRef<HTMLDivElement>(null);
     useEffect(() => {
@@ -35,41 +25,9 @@ export function App() {
         }
     },[]);
 
-    const youtubeLinkOnChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        if (youtubeURL != e.target.value) setYoutubeURL(e.target.value);
-    }, [youtubeURL]);
-
-    const codeOnChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value.toUpperCase();
-        if (locKeyByCode.has(value)) {
-            const locKey: LocalizationKey = locKeyByCode.get(value)!;
-            console.log(locKey);
-            setContainerId(locKey.containerId.toString());
-            setLocKey(locKey.key);
-            setText(locKey.text);
-            setHasInSheet(locSheetKeysByIdKey.has(`${locKey.containerId}.${locKey.key}`))
-        } else {
-            setContainerId(null);
-            setLocKey(null);
-            setText(null);
-        }
-    }, [locKeyByCode, locSheetKeysByIdKey]);
-
-    const handleTimeChange = useCallback((youtubeURL: string, time: number) => {
-        setContextValue(`https://youtu.be/${getVideoIdFromURL(youtubeURL)}?t=${Math.trunc(time)}`);
-        setTiming(formatTime(time));        
-    },[]);
-    const contextOnChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        setContextValue(e.target.value);
-    },[]);
-    const timingOnChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        setTiming(e.target.value);
-    },[]);
-
-    console.log(`Rerender key: ${locKey}`)
     return (
         <GridLayout>
-            <YoutubeVideo videoURL={youtubeURL} handleTimeChange={handleTimeChange}/>
+            <YoutubeVideo videoURL={youtubeURL} handleTimeOnChange={handleTimeOnChange}/>
             <div ref={wrapperKeys}>
                 <Card component_style={{ width: "515px", maxHeight: keyInfoHeight }}>
                     <KeyInfo containerId={containerId} locKey={locKey} text={text} locationKey={locationKey} hasInSheet={hasInSheet}/>
@@ -82,7 +40,7 @@ export function App() {
                 codeOnChange={codeOnChange}
                 />
             <Card component_style={{height: "310px", width: "515px"}} dynamic_height={false} isScrolling={false}>
-                <ControlingPanel/>
+                <ControlingPanel voiceCode={voiceCode}/>
             </Card>
         </GridLayout>
     )
