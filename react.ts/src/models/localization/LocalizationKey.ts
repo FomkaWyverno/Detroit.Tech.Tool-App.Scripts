@@ -1,13 +1,10 @@
-import { getVoiceKey } from "../../utils/LocalizationUtil";
 import { BaseLocalizationKey } from "./BaseLocalizationKey";
 
 export class LocalizationKey extends BaseLocalizationKey { // Локалізаційний текст, який має всю інформацію про ключ, включно з його ключем та контейнером де він знаходиться.
-    public static readonly patternCode = /^!(.+?)! (.+)?/
+    private static readonly patternCode = /^!(.+?)! (.+)?/
 
     public readonly text: string;
     public readonly code: string;
-    public readonly voiceKey: string | undefined;
-    public readonly isVoice: boolean;
 
     /**
      * Конструктор LocalizationKeyText - який описує ключ локалізації
@@ -24,14 +21,11 @@ export class LocalizationKey extends BaseLocalizationKey { // Локалізац
         hasLink: boolean,
         linkExists: boolean
     ) {
-        super(containerId, key);
+        super(containerId, key, hasLink && linkExists);
         const {code, text} = LocalizationKey.unpackOriginalText(ogirinalText); 
         this.code = code;
         this.text = text;
-        this.voiceKey = getVoiceKey(key);
-        this.isVoice = hasLink && linkExists;
     }
-
 
     /**
      * Розпаковує оригінальний текст, виділяючи з нього код і основний текст.

@@ -20,6 +20,6 @@ export class LocalizationSheetKey extends BaseLocalizationKey {
         key: string,
         public readonly actorName: string | undefined
     ) {
-        super(containerId, key);
+        super(containerId, key, (actorName !== undefined));
     }
 }

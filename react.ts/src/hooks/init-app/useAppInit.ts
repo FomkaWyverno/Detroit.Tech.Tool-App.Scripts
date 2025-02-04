@@ -2,7 +2,7 @@ import { LocalizationKey } from '../../models/localization/LocalizationKey';
 import { useCallback, useContext, useEffect, useState } from "react";
 import useFetch from "../useFetch";
 import { LocalizationData } from "../../types/localization/localization";
-import { groupByVoiceKey, groupLocKeyTextByCode, groupLocSheetKeyByContainerIdAndKey, mapLocalizationToKeyText } from '../../utils/LocalizationUtil';
+import { groupByVoiceCode, groupLocKeyTextByCode, groupLocSheetKeyByContainerIdAndKey, mapLocalizationToKeyText } from '../../utils/LocalizationUtil';
 import { AppScripts } from '../../services/app-scripts/AppScripts';
 import { Sheet } from '../../models/sheet/Sheet';
 import { parseSheetToLocalizationSheetKeys } from '../../utils/SheetUtil';
@@ -73,7 +73,7 @@ function useAppInit(): [
             setState(STATE.PROCESS_KEYS); // Оброблюємо дані з таблиці
             const keys: LocalizationSheetKey[] = sheets.flatMap(sheet => parseSheetToLocalizationSheetKeys(sheet)); // Парсимо дані в моделі ключів локалізації
             setLocSheetKeys(groupLocSheetKeyByContainerIdAndKey(keys));
-            const group = groupByVoiceKey(keys);
+            const group = groupByVoiceCode(keys);
             console.log(group); 
             dispatchActorNames({type: "INIT_ACTOR_NAMES", payload: group}); // Ініцілізуємо імена акторів
 

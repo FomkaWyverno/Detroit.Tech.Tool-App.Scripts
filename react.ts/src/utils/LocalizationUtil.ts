@@ -2,9 +2,6 @@ import { LocalizationKey } from "../models/localization/LocalizationKey";
 import { LocalizationSheetKey } from "../models/localization/LocalizationSheetKey";
 import { LocalizationData } from "../types/localization/localization";
 
-
-const patternVoiceKey = /.+?_.+?_.+?_.+?_(.+?)_.+/;
-
 /**
  * Перетворює дані локалізації в масив об'єктів типу LocalizationKeyText.
  * Кожен об'єкт містить інформацію про контейнер, ключ, текст і додаткові параметри.
@@ -43,20 +40,6 @@ export function groupLocKeyTextByCode(arrayLocKeyText: Array<LocalizationKey>): 
 }
 
 /**
- * Повертає голосовий ключ (voiceKey) із заданого ключа локалізації.
- * Очікується, що ключ має формат: `metaText_metaText_metaText_metaText_VOICE-KEY_metaText`.
- * Приклад: X0101X_TERRACE_PARTI_PC_X01CONNOR_TRUTH0101V2 - Результат: X01CONNOR
- * 
- * @param key Ключ локалізації, що містить голосовий ідентифікатор.
- * @returns Повертає голосовий ключ або `"-"`, якщо формат ключа не відповідає очікуваному.
- */
-export function getVoiceKey(key: string): string | undefined {
-    const matches = patternVoiceKey.exec(key);
-    if (matches) return matches[1];
-    return undefined;
-}
-
-/**
  * Групує ключі локалізації за голосовим ключем (voiceKey), відфільтровуючи ті,
  * що мають актора, і створює мапу, де ключем є voiceKey, а значенням — масив акторських імен.
  * 
@@ -78,10 +61,10 @@ export function getVoiceKey(key: string): string | undefined {
  *   ["X01CONNOR", ["Конор"]]
  * ])
  */
-export function groupByVoiceKey(keys: LocalizationSheetKey[]): Map<string, string[]> {
+export function groupByVoiceCode(keys: LocalizationSheetKey[]): Map<string, string[]> {
     return keys.filter(key => key.actorName) // Фільтруємо лише ті, що мають актора
                 .reduce((map, key) => {
-                    const voiceKey = getVoiceKey(key.key); // Отримуємо голосовий ключ
+                    const voiceKey = key.voiceCode; // Отримуємо голосовий ключ
                     if (voiceKey) { // Перевіряємо, чи є дійсним voiceKey
                         // Якщо в мапі вже є такий voiceKey, додаємо ActorName
                         if (map.has(voiceKey)) {

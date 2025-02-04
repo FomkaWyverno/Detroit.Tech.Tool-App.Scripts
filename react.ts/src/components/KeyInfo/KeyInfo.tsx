@@ -1,3 +1,5 @@
+import { LocalizationKey } from '../../models/localization/LocalizationKey'
+import { LocalizationSheetKey } from '../../models/localization/LocalizationSheetKey'
 import BooleanBlockInfo from './BooleanBlockInfo/BooleanBlockInfo'
 import InfoBlock from './InfoBlock/InfoBlock'
 import style from './KeyInfo.module.scss'
@@ -7,11 +9,8 @@ interface IKeyInfoProps {
     maxHeight?: string
     maxWidth?: string
 
-    containerId?: string | null
-    locKey?: string | null
-    text?: string | null
-    hasInSheet?: boolean | null
-    locationKey?: string | null
+    localizationKey: LocalizationKey | null
+    localizationSheetKey: LocalizationSheetKey | null
 }
 
 function KeyInfo({
@@ -19,11 +18,8 @@ function KeyInfo({
     maxHeight,
     maxWidth,
 
-    containerId,
-    locKey,
-    text,
-    hasInSheet,
-    locationKey,
+    localizationKey,
+    localizationSheetKey
 }: IKeyInfoProps) {
 
 
@@ -35,11 +31,11 @@ function KeyInfo({
     return (
         <div className={`${style.key_info} ${className}`}
             style={containerStyle}>      
-            <InfoBlock label="ContrainerId:" text={containerId ?? "-"}/>
-            <InfoBlock label="Key:" text={locKey ?? "-"}/>
-            <InfoBlock label="Text:" text={text ?? "-"} wordBreak='break-word' />
-            <BooleanBlockInfo label="Ключ присутній у таблиці?" trueText='Ні' falseText='Так' state={!hasInSheet}/>
-            <InfoBlock label="Місцезнаходження ключа:" wordBreak='break-word' text={locationKey ?? "-"}/>
+            <InfoBlock label="ContrainerId:" text={String(localizationKey?.containerId ?? "-")}/>
+            <InfoBlock label="Key:" text={localizationKey?.key ?? '-'}/>
+            <InfoBlock label="Text:" text={localizationKey?.text ?? "-"} wordBreak='break-word' />
+            <BooleanBlockInfo label="Ключ присутній у таблиці?" trueText='Ні' falseText='Так' state={localizationSheetKey ? false : true}/>
+            <InfoBlock label="Місцезнаходження ключа:" wordBreak='break-word' text={localizationSheetKey?.locationKey.toA1Notation() ?? "-"}/>
         </div>
     )
 }

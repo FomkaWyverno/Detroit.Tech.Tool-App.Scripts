@@ -3,8 +3,11 @@ import { LocKeyByCodeContext } from "../../context/LocKeyByCodeContext";
 import { LocSheetKeysContext } from "../../context/LocSheetKeysContext";
 import { LocalizationKey } from "../../models/localization/LocalizationKey";
 import { LocalizationSheetKey } from "../../models/localization/LocalizationSheetKey";
-import { getVoiceKey } from "../../utils/LocalizationUtil";
 
+export type CodeHandlerState = {
+    localizationKey: LocalizationKey | null,
+    localizationSheetKey: LocalizationSheetKey | null
+}
 
 /**
  * Хук `useCodeHandler` обробляє введення коду та знаходить відповідні локалізаційні ключі.
@@ -18,23 +21,14 @@ import { getVoiceKey } from "../../utils/LocalizationUtil";
  * - `codeOnChange`: Функція обробки введеного значення, яка шукає відповідний локалізаційний ключ.
  */
 function useCodeHandler(): {
-    containerId: string | null,
-    locKey: string | null,
-    text: string | null,
-    hasInSheet: boolean,
-    voiceCode: string | null,
-    locKeyModel: LocalizationKey | null,
-    locSheetKeyModel: LocalizationSheetKey | null,
+    codeHandlerState: CodeHandlerState
     codeOnChange: (e: ChangeEvent<HTMLInputElement>) => void
 } {
     // Локальні стани для збереження даних про локалізаційний ключ
-    const [containerId, setContainerId] = useState<string | null>(null);
-    const [locKey, setLocKey] = useState<string | null>(null);
-    const [text, setText] = useState<string | null>(null);
-    const [hasInSheet, setHasInSheet] = useState<boolean>(false)
-    const [locKeyModel, setLocKeyModel] = useState<LocalizationKey | null>(null);
-    const [locSheetKeyModel, setLocSheetKeyModel] = useState<LocalizationSheetKey | null>(null);
-    const [voiceCode, setVoiceCode] = useState<string | null>(null);  
+    const [state, setState] = useState<CodeHandlerState>({
+        localizationKey: null,
+        localizationSheetKey: null
+    });
 
     // Контексти для отримання даних про ключі локалізації
     const { locKeyByCode } = useContext(LocKeyByCodeContext);
@@ -43,50 +37,21 @@ function useCodeHandler(): {
     // Функція обробки введеного значення (коду)
     const codeOnChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value.toUpperCase(); // Перетворюємо введене значення у верхній регістр
-        if (locKeyByCode.has(value)) {
-            const localizationKey: LocalizationKey = locKeyByCode.get(value)!;
-            
-            // Оновлюємо стан на основі знайденого ключа
-            setContainerId(localizationKey.containerId.toString());
-            setLocKey(localizationKey.key);
-            setText(localizationKey.text);
-            setHasInSheet(locSheetKeysByIdKey.has(localizationKey.getUniquiKey()));
-            setLocKeyModel(localizationKey);
-            if (locSheetKeysByIdKey.has(localizationKey.getUniquiKey())) {
-                const locSheetKey: LocalizationSheetKey | undefined = locSheetKeysByIdKey.get(localizationKey.getUniquiKey());
-                if (locSheetKey) {
-                    setLocSheetKeyModel(locSheetKey);
-                    console.log(locSheetKey);
-                }
-            } else {
-                setLocSheetKeyModel(null);
-            }
-
-            if (localizationKey.isVoice) { // Якщо новий ключ це голосовий локалізаційний ключ
-                setVoiceCode(getVoiceKey(localizationKey.key) ?? null); // Встановлюємо голосовий ключ
-            } else {
-                setVoiceCode(null); // Якщо це текстовий локалізаційний ключ
-            }
-        } else {
-            // Якщо локалізаційного ключа не знайдено, скидаємо всі значення
-            setContainerId(null);
-            setLocKey(null);
-            setText(null);
-            setHasInSheet(false);
-            setVoiceCode(null);
-            setLocKeyModel(null);
-            setLocSheetKeyModel(null);
+        const localizationKey: LocalizationKey | null = locKeyByCode.get(value) ?? null;
+        let localizationSheetKey: LocalizationSheetKey | null = null;
+        if (localizationKey) {
+            localizationSheetKey = locSheetKeysByIdKey.get(localizationKey.getUniquiKey()) ?? null;
         }
+
+        setState((prevState) => {
+            if (prevState.localizationKey === localizationKey && prevState.localizationSheetKey === localizationSheetKey) return prevState;
+            return { localizationKey, localizationSheetKey }
+        })
+
     }, [locKeyByCode, locSheetKeysByIdKey]);
 
     return {
-        containerId,
-        locKey,
-        text,
-        hasInSheet,
-        voiceCode,
-        locKeyModel,
-        locSheetKeyModel,
+        codeHandlerState: state,
         codeOnChange
     };
 }
