@@ -1,5 +1,3 @@
-import { Sheet } from "./Sheet";
-
 /**
  * Представляє діапазон (`Range`) комірок у межах певного аркуша (`Sheet`).
  */
@@ -9,14 +7,14 @@ export class Range {
     /**
      * Створює новий екземпляр `Range`.
      *
-     * @param {Sheet} sheet Аркуш, до якого належить діапазон.
+     * @param {string} sheetName Назва аркуша, до якого належить діапазон.
      * @param {number} indexRow Індекс початкового рядка (нумерація з 0).
      * @param {number} indexColumn Індекс початкової колонки (нумерація з 0).
      * @param {number} [numRows=1] Кількість рядків у діапазоні (за замовчуванням 1).
      * @param {number} [numColumns=1] Кількість колонок у діапазоні (за замовчуванням 1).
      */
     constructor(
-        public readonly sheet: Sheet,
+        public readonly sheetName: string,
         public readonly indexRow: number,
         public readonly indexColumn: number,
         public readonly numRows: number = 1,
@@ -44,12 +42,12 @@ export class Range {
         const startRow = this.toNumRow(this.indexRow);
 
         if (this.numColumns == 1 && this.numRows == 1) {
-            return `'${this.sheet.getSheetName()}'!${startColumn}${startRow}`;
+            return `'${this.sheetName}'!${startColumn}${startRow}`;
         }
 
         const endColumn = this.toColumnLetter(this.indexColumn + this.numColumns - 1);
         const endRow = this.toNumRow(this.indexRow + this.numRows - 1);
 
-        return `'${this.sheet.getSheetName()}'!${startColumn}${startRow}:${endColumn}${endRow}`;
+        return `'${this.sheetName}'!${startColumn}${startRow}:${endColumn}${endRow}`;
     }
 }

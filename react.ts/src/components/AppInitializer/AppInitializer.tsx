@@ -22,6 +22,7 @@ function AppInitializer({
 
     if (isInitialize) {
         return (
+            
             <LocSheetKeysContextProvider contextValue={{ locSheetKeysByIdKey: locSheetKeysByIdKey }}>
                 <LocKeyByCodeContextProvider contextValue={{ locKeyByCode: locKeyByCode }}>
                     {children}

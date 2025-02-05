@@ -1,8 +1,9 @@
-import { LocalizationFragments } from './../../../src/models/localization/LocalizationFragments';
+import { LocalizationFragments } from '../../../../src/models/localization/fragments/LocalizationFragments';
 
 describe('LocalizaionFragments', () => {
     test('Plain text', () => {
         const fragments = new LocalizationFragments('This is first text');
+        expect(fragments.prefixes).toEqual(['']);
         expect(fragments.texts).toEqual(['This is first text']);
     });
     test('Plain text with space start', () => {
@@ -10,10 +11,21 @@ describe('LocalizaionFragments', () => {
         expect(fragments.texts).toEqual(['This is first text']);
         expect(fragments.prefixes).toEqual(['\\S\\S']);
     });
-    test('One QD prefix', () => {
+    test('Start one QD prefix', () => {
         const fragments = new LocalizationFragments('<QD_NORMAL>UNCOMFORTABLE');
         expect(fragments.prefixes).toEqual(['<QD_NORMAL>']);
         expect(fragments.texts).toEqual(['UNCOMFORTABLE']);
+    });
+    test('End one QD prefix', () => {
+        const fragments = new LocalizationFragments('UNCOMFORTABLE<QD_NORMAL>');
+        expect(fragments.prefixes).toEqual(['']);
+        expect(fragments.suffix).toEqual('<QD_NORMAL>');
+        expect(fragments.texts).toEqual(['UNCOMFORTABLE']);
+    });
+    test('In text one QD prefix', () => {
+        const fragments = new LocalizationFragments('UNCOMFORTABLE<QD_THIN> BUT');
+        expect(fragments.prefixes).toEqual(['','<QD_THIN>\\S']);
+        expect(fragments.texts).toEqual(['UNCOMFORTABLE', 'BUT']);
     });
     test('Many QD prefix', () => {
         const fragments = new LocalizationFragments('<QD_NORMAL>UNCOMFORTABLE<QD_THIN> BUT <QD_NORMAL>SAFE<QD_THIN>?<QD_BR><QD_NORMAL>HOW<QD_THIN> TO GET IN?');
@@ -50,5 +62,10 @@ describe('LocalizaionFragments', () => {
         expect(fragments.prefixes).toEqual(['<QD_NORMAL>', '<QD_THIN>\\S']);
         expect(fragments.texts).toEqual(['HOW', 'TO GET IN?']);
         expect(fragments.suffix).toEqual('\\n');
-    })
+    });
+    test('Empty string', () => {
+        const fragments = new LocalizationFragments('');
+        expect(fragments.prefixes).toEqual(['']);
+        expect(fragments.texts).toEqual(['']);
+    });
 });

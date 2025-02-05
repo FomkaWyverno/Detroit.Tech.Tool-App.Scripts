@@ -1,3 +1,4 @@
+import { LocalizationFragments } from './fragments/LocalizationFragments';
 import { BaseLocalizationKey } from "./BaseLocalizationKey";
 
 export class LocalizationKey extends BaseLocalizationKey { // Локалізаційний текст, який має всю інформацію про ключ, включно з його ключем та контейнером де він знаходиться.
@@ -5,6 +6,7 @@ export class LocalizationKey extends BaseLocalizationKey { // Локалізац
 
     public readonly text: string;
     public readonly code: string;
+    public readonly fragments: LocalizationFragments;
 
     /**
      * Конструктор LocalizationKeyText - який описує ключ локалізації
@@ -25,6 +27,7 @@ export class LocalizationKey extends BaseLocalizationKey { // Локалізац
         const {code, text} = LocalizationKey.unpackOriginalText(ogirinalText); 
         this.code = code;
         this.text = text;
+        this.fragments = new LocalizationFragments(text);
     }
 
     /**

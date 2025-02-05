@@ -26,7 +26,6 @@ const enum STATE {
 /**
  * Кастомний хук для ініціалізації застосунку.
  * Виконує завантаження локалізаційних ключів, ініціалізує App Scripts
- * TODO: У розробці
  *
  * @returns {[boolean, string, string, number, Map<string, LocalizationKey>]} 
  * Масив зі станом ініціалізації, статусом, повідомленням про помилку, прогресом і мапою локалізаційних ключів.
@@ -69,8 +68,9 @@ function useAppInit(): [
             // Отримання екземпляра AppScripts
             const appScripts = await AppScripts.getInstance();
             const sheets: Array<Sheet> = await processSheets(appScripts, setState, setProgress); // Оброблюємо таблицю
-
+    
             setState(STATE.PROCESS_KEYS); // Оброблюємо дані з таблиці
+            
             const keys: LocalizationSheetKey[] = sheets.flatMap(sheet => parseSheetToLocalizationSheetKeys(sheet)); // Парсимо дані в моделі ключів локалізації
             setLocSheetKeys(groupLocSheetKeyByContainerIdAndKey(keys));
             const group = groupByVoiceCode(keys);

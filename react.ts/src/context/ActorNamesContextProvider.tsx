@@ -1,5 +1,21 @@
 import React, { useReducer } from "react";
-import { ActorNamesState, ActorNamesAction, ActorNamesContext } from "./ActorNamesContex";
+import { ActorNamesContext } from "./ActorNamesContex";
+
+/**
+ * Тип стану для зберігання акторів по голосовим ключам.
+ */
+export type ActorNamesState = {
+  actorNamesByVoiceKey: Map<string, string[]>;
+};
+
+/**
+ * Типи дій, що підтримуються редюсером для роботи з акторськими даними.
+ */
+export type ActorNamesAction =
+  | { type: "INIT_ACTOR_NAMES"; payload: Map<string, string[]> }
+  | { type: "ADD_ACTOR_NAME"; payload: { voiceCode: string; actorName: string } };
+
+
 
 /**
  * Початковий стан для редюсера.

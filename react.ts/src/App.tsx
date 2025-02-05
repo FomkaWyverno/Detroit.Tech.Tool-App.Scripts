@@ -7,7 +7,7 @@ import KeyInfo from "./components/KeyInfo/KeyInfo";
 import YoutubeVideo from "./components/YoutubeVideo/YoutubeVideo";
 import useCodeHandler from "./hooks/app/useCodeHandler";
 import useYoutubeHandler from "./hooks/app/useYoutubeHandler";
-import useControlingButtons from "./hooks/app/useControlingButtons";
+import useControlingButtons from "./hooks/app/useControlingButtonts/useControlingButtons";
 
 
 
