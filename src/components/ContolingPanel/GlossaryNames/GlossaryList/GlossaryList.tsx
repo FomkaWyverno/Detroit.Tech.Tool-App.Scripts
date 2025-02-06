@@ -6,11 +6,13 @@ import { ActorNamesContext } from "../../../../context/ActorNamesContex";
 interface IGlossaryList {
     height?: string
     voiceCode: string | null
+    onClickItem?: (item_name: string) => void
 }
 
 function GlossaryList({
     height = 'auto',
-    voiceCode
+    voiceCode,
+    onClickItem
 }: IGlossaryList) {
     const [listHeight, setListHeight] = useState('auto');
     const listRef = useRef<HTMLUListElement>(null);
@@ -40,12 +42,14 @@ function GlossaryList({
             return;
         }
 
-        setListNames(actorNamesByVoiceKey.get(voiceCode) || [])
+        setListNames(actorNamesByVoiceKey.get(voiceCode) || []);
     }, [voiceCode, actorNamesByVoiceKey]);
+
+
 
     return (
         <ul ref={listRef} className={`scrolling-y ${style.glossary_list}`} style={{height: listHeight}}>
-            {listNames.map((name) => <GlossaryItem key={`${voiceCode}.${name}`} name={name}/>)}
+            {listNames.map((name) => <GlossaryItem key={`${voiceCode}.${name}`} name={name} onClick={onClickItem}/>)}
         </ul>        
     )
 }

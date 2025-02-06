@@ -21,10 +21,12 @@ interface IInputsContainer {
     timingOnChange?: (e: ChangeEvent<HTMLInputElement>) => void
     actorOnChange?: (e: ChangeEvent<HTMLInputElement>) => void
 
+
     onChangeInputsValue?: (newInputsValues: InputsContainerReducer.ValuesInputsState) => void
 
     context_value?: string
     timing_value?: string
+    actor_value?: string
 }
 
 function InputsContainer({
@@ -35,8 +37,10 @@ function InputsContainer({
     actorOnChange,
 
     onChangeInputsValue,
+
     context_value,
-    timing_value
+    timing_value,
+    actor_value
 }: IInputsContainer) {
     const [state, dispatch] = useReducer(reducer, InputsContainerReducer.defaultReducerValue);
 
@@ -46,7 +50,6 @@ function InputsContainer({
 
     const wrapperYoutubeLinkOnChange = useMemo(() => createWrapper("CHANGE_YOUTUBE_LINK", dispatch, youtubeLinkOnChange), [youtubeLinkOnChange]);
     const wrapperCodeOnChange = useMemo(() => createWrapper("CHANGE_CODE_VALUE", dispatch, codeOnChange), [codeOnChange]);
-    const wrapperActorOnChange = useMemo(() => createWrapper("CHANGE_ACTOR_VALUE", dispatch, actorOnChange), [actorOnChange])
 
     useEffect(() => { 
         if (context_value) {
@@ -65,7 +68,7 @@ function InputsContainer({
             <InputText id="code-input" placeholder="Введіть код" onChange={wrapperCodeOnChange} />
             <InputText id="context-input" placeholder="Введіть контекст" onChange={contextOnChange} value_input={context_value} />
             <InputText id="timing-input" placeholder="Введіть таймінг" onChange={timingOnChange} value_input={timing_value} />
-            <InputText id="actor" placeholder="Введіть актора" onChange={wrapperActorOnChange} />
+            <InputText id="actor" placeholder="Введіть актора" onChange={actorOnChange} value_input={actor_value}/>
         </div>
     )
 }

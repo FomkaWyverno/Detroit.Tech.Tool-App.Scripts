@@ -4,12 +4,14 @@ import style from "./GlossaryName.module.scss"
 
 interface IGlossaryNames {
     height?: string
-    voiceCode: string | null 
+    voiceCode: string | null
+    onClickItem?: (item_name: string) => void
 }
 
 function GlossaryNames({
     height = 'auto',
-    voiceCode
+    voiceCode,
+    onClickItem
 }: IGlossaryNames) {
     const [heightList, setHeightList] = useState<string>('auto');
     const headerRef = useRef<HTMLDivElement>(null);
@@ -34,7 +36,7 @@ function GlossaryNames({
                     <span className={style.glossary_names__header__details_code__code}>{voiceCode ?? '-'}</span>
                 </div>
             </div>
-            <GlossaryList height={heightList} voiceCode={voiceCode}/>
+            <GlossaryList height={heightList} voiceCode={voiceCode} onClickItem={onClickItem}/>
         </div>
     )
 }

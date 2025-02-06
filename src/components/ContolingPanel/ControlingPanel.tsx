@@ -10,12 +10,14 @@ interface IControlingPanel {
     voiceCode: string | null
     onClickAddInSheetButton: (e: MouseEvent<HTMLButtonElement>) => void
     onClickSearchButton: (e: MouseEvent<HTMLButtonElement>) => void
+    onClickGlossaryItem?: (item_name: string) => void
 }
 
 function ControlingPanel({
     voiceCode,
     onClickAddInSheetButton,
-    onClickSearchButton
+    onClickSearchButton,
+    onClickGlossaryItem
 }: IControlingPanel) {
     const panelRef = useRef<HTMLDivElement>(null);
     const buttonsWrapperRef = useRef<HTMLDivElement>(null);
@@ -40,7 +42,7 @@ function ControlingPanel({
                 <ButtonSearchKeyInSheet onClick={onClickSearchButton}/>
             </div>
             <div ref={glossaryWrapperRef} className={style.controling_wrapper} style={{flexGrow: 1}}>
-                <GlossaryNames height={glossaryHeight} voiceCode={voiceCode}/>
+                <GlossaryNames height={glossaryHeight} voiceCode={voiceCode} onClickItem={onClickGlossaryItem}/>
             </div>
         </div>
     )

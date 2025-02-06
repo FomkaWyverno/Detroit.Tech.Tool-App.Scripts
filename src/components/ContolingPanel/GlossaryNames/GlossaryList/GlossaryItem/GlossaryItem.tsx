@@ -1,23 +1,23 @@
-import { MouseEvent, useCallback } from "react"
+import { useCallback } from "react"
 import style from "./GlossaryItem.module.scss"
 import SoundManager from "../../../../../utils/SoundManager"
 
 
 interface IGlossaryItem {
     name: string
-    onClick?: (e: MouseEvent<HTMLButtonElement>) => void
+    onClick?: (item_name: string) => void
 }
 
 function GlossaryItem({
     name,
     onClick
 }: IGlossaryItem) {
-    const onClickHandler = useCallback((e: MouseEvent<HTMLButtonElement>) => {
-        SoundManager.playClickSound();
-        if (onClick) onClick(e);
-    },[onClick]);
+    const onClickHandler = useCallback(() => {
+        SoundManager.playClickSound(0.2);
+        if (onClick) onClick(name);
+    },[name, onClick]);
     const onMouseEnterHandler = useCallback(() => {
-        SoundManager.playHoverSound();
+        SoundManager.playHoverSound(0.2);
     },[]);
     return (
         <li className={style.glossary_item}>

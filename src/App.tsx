@@ -9,6 +9,7 @@ import useCodeHandler from "./hooks/app/useCodeHandler";
 import useYoutubeHandler from "./hooks/app/useYoutubeHandler";
 import useControlingButtons from "./hooks/app/useControlingButtonts/useControlingButtons";
 import * as InputsContainerReducer from "./components/InputsContainer/InputsContainerReducer";
+import useGlossaryItemHandler from "./hooks/app/useGlossaryItemHandler";
 
 
 
@@ -19,9 +20,10 @@ export function App() {
     const { youtubeURL, contextValue, timing, youtubeLinkOnChange, handleTimeOnChange, contextOnChange, timingOnChange } = useYoutubeHandler();
     const { codeHandlerState, codeOnChange } = useCodeHandler();
     const { onClickAddInSheetButton, onClickSearchButton } = useControlingButtons(codeHandlerState.localizationKey, codeHandlerState.localizationSheetKey, inputsValues);
+    const { onClickGlossaryItem, actorOnChange, actor_value } = useGlossaryItemHandler();
 
     const onChangeInputsValue = useCallback((values: InputsContainerReducer.ValuesInputsState) => setInputsValues(values),[]);
-    
+
     const wrapperKeys = useRef<HTMLDivElement>(null);
     useEffect(() => {
         if (wrapperKeys.current) {
@@ -42,6 +44,7 @@ export function App() {
                 contextOnChange={contextOnChange} context_value={contextValue}
                 timingOnChange={timingOnChange} timing_value={timing}
                 codeOnChange={codeOnChange}
+                actorOnChange={actorOnChange} actor_value={actor_value}
                 onChangeInputsValue={onChangeInputsValue}
                 />
             <Card component_style={{height: "310px", width: "515px"}} dynamic_height={false} isScrolling={false}>
@@ -49,6 +52,7 @@ export function App() {
                     voiceCode={codeHandlerState.localizationKey?.voiceCode ?? null}
                     onClickAddInSheetButton={onClickAddInSheetButton}
                     onClickSearchButton={onClickSearchButton}
+                    onClickGlossaryItem={onClickGlossaryItem}
                     />
             </Card>
         </GridLayout>

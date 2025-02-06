@@ -128,7 +128,7 @@ export class Sheet {
      * @returns {Range} Об'єкт діапазону (`Range`) для вказаної області.
      */
     public getRange(indexRow: number, indexColumn: number, numRows?: number, numColumns ?: number): Range {
-        return new Range(this, indexRow, indexColumn, numRows, numColumns)
+        return new Range(this.getSheetName(), indexRow, indexColumn, numRows, numColumns)
     }
 
     /**
