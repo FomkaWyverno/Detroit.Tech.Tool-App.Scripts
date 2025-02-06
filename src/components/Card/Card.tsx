@@ -4,6 +4,7 @@ import style from './Card.module.scss'
 
 interface ICardProps {
     children?: ReactNode
+    className?: string
     component_style?: CSSProperties,
     dynamic_height?: boolean
     isScrolling?: boolean
@@ -36,6 +37,7 @@ interface ICardProps {
  */
 function Card({
     children,
+    className,
     component_style = {},
     dynamic_height = true,
     isScrolling = true
@@ -85,11 +87,11 @@ function Card({
                 }
             }
         }
-    }, [component_style]);
+    }, [component_style, dynamic_height]);
 
     return (
         <div
-            className={style.card}
+            className={`${style.card} ${className}`}
             style={{...component_style, height: currentHeight}}
             ref={cardRef}>
             <div

@@ -1,0 +1,21 @@
+.card_message_popup {
+    --message-pop-up-card-translate-x: -50%;
+    --message-pop-up-card-translate-y: 0%;
+
+    position: absolute;
+    left: 50%;
+    top: 25px;
+    transform: translate(var(--message-pop-up-card-translate-x), var(--message-pop-up-card-translate-y));
+    max-width: 600px;
+
+    font-family: 'Play', 'Noto Color Emoji';
+    font-size: 24px;
+    font-weight: 400;
+    color: #d8447c;
+
+    transition: 1s all ease-out;
+
+    &__hide {
+        --message-pop-up-card-translate-y: calc(-100% - 50px);
+    }
+}

@@ -10,6 +10,7 @@ import useYoutubeHandler from "./hooks/app/useYoutubeHandler";
 import useControlingButtons from "./hooks/app/useControlingButtonts/useControlingButtons";
 import * as InputsContainerReducer from "./components/InputsContainer/InputsContainerReducer";
 import useGlossaryItemHandler from "./hooks/app/useGlossaryItemHandler";
+import MessagePopup from "./components/MessagePopup/MessagePopup";
 
 
 
@@ -33,6 +34,7 @@ export function App() {
 
     return (
         <GridLayout>
+            <MessagePopup message="error" isVisible={true}/>
             <YoutubeVideo videoURL={youtubeURL} handleTimeOnChange={handleTimeOnChange}/>
             <div ref={wrapperKeys}>
                 <Card component_style={{ width: "515px", maxHeight: keyInfoHeight }}>
