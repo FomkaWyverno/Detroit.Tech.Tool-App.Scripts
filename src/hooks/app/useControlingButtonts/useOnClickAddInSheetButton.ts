@@ -3,10 +3,11 @@ import { LocalizationKey } from "../../../models/localization/LocalizationKey";
 import { LocalizationSheetKey } from "../../../models/localization/LocalizationSheetKey";
 import SoundManager from "../../../utils/SoundManager";
 import { AppScripts } from "../../../services/app-scripts/AppScripts";
+import { ValuesInputsState } from "../../../components/InputsContainer/InputsContainerReducer";
 
 
-function useOnClickAddInSheetButton(localizatinKey: LocalizationKey | null, localizatinKeySheet: LocalizationSheetKey | null): {
-    onClickAddInSheetButton: () => void
+function useOnClickAddInSheetButton(localizatinKey: LocalizationKey | null, localizatinKeySheet: LocalizationSheetKey | null, inputValues: ValuesInputsState): {
+    onClickAddInSheetButton: () => void,
 } {
     const onClickAddInSheetButton = useCallback(async () => {
         console.log(localizatinKey);

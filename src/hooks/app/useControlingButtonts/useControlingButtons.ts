@@ -2,6 +2,7 @@ import { LocalizationSheetKey } from "../../../models/localization/LocalizationS
 import { LocalizationKey } from "../../../models/localization/LocalizationKey";
 import useOnClickSearchButton from "./useOnClickSearchButton";
 import useOnClickAddInSheetButton from "./useOnClickAddInSheetButton";
+import { ValuesInputsState } from "../../../components/InputsContainer/InputsContainerReducer";
 
 
 /**
@@ -16,12 +17,13 @@ import useOnClickAddInSheetButton from "./useOnClickAddInSheetButton";
  */
 function useControlingButtons(
     localizatinKey: LocalizationKey | null,
-    locKeySheetModel: LocalizationSheetKey | null
+    locKeySheetModel: LocalizationSheetKey | null,
+    inputValues: ValuesInputsState
 ): {
     onClickAddInSheetButton: () => void
     onClickSearchButton: () => void 
 } {
-    const { onClickAddInSheetButton } = useOnClickAddInSheetButton(localizatinKey, locKeySheetModel);
+    const { onClickAddInSheetButton } = useOnClickAddInSheetButton(localizatinKey, locKeySheetModel, inputValues);
     const { onClickSearchButton } = useOnClickSearchButton(locKeySheetModel);
     return {
         onClickAddInSheetButton,
