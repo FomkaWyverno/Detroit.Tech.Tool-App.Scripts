@@ -52,15 +52,20 @@ function InputsContainer({
     const wrapperCodeOnChange = useMemo(() => createWrapper("CHANGE_CODE_VALUE", dispatch, codeOnChange), [codeOnChange]);
 
     useEffect(() => { 
-        if (context_value) {
+        if (context_value !== null && context_value !== undefined) {
             dispatch({ type: "CHANGE_CONTEXT_VALUE", payload: context_value });
         }
     }, [context_value]);
     useEffect(() => {
-        if (timing_value) {
+        if (timing_value !== null && timing_value !== undefined) {
             dispatch({ type: "CHANGE_TIMING_VALUE", payload: timing_value });
         } 
     }, [timing_value]);
+    useEffect(() => {
+        if (actor_value !== null && actor_value !== undefined) {
+            dispatch({ type: "CHANGE_ACTOR_VALUE", payload: actor_value });
+        }
+    }, [actor_value]);
 
     return (
         <div className={style.inputs_container}>

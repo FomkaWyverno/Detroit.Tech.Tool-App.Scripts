@@ -20,7 +20,7 @@ const enum SheetColumnName {
  */
 export function parseSheetToLocalizationSheetKeys(sheet: Sheet): Array<LocalizationSheetKey> {
     const sheetKeys: Array<LocalizationSheetKey> = [];
-    if (sheet.length() == 0) return sheetKeys;
+    if (sheet.length() <= 1) return sheetKeys;
 
     const numColumnsSheet = sheet.getRow(0).length();
 

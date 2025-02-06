@@ -1,3 +1,4 @@
+import { AddedLocalizationSheetKey } from '../../types/localization/localization';
 import { AppScripts } from './AppScripts';
 
 /**
@@ -71,5 +72,24 @@ export class AppScriptsFunctions {
      */
     public showRange(sheetName: string, indexRow: number, indexColumn: number, numRows: number, numColumns: number): Promise<void> {
         return this.appScripts.sendToAppScript<void>('showRange', this.timeout, sheetName, indexRow, indexColumn, numRows, numColumns);
+    }
+
+    /**
+     * Додаємо локалізаційний ключ до таблиці
+     * @param {number} containerId айді контейнера
+     * @param {string} key Локалізаційний ключ
+     * @param {string} gameText сирий текст, як він відображається прямо в грі
+     * @param {[string]} prefixes массив префіксів які потрібно додати
+     * @param {[string]} texts  массив текстів які потрібно додати
+     * @param {string} suffix  Суфікс який потрібно 
+     * 
+     * @param {string} context Контекст ключа
+     * @param {string} timing Таймінг, якщо це відео
+     * @param {?string} actor Якщо це діалоги, має бути присутнім назва актора, якщо це не діалоги, тоді цей параметр має бути відсутнім, тобто null
+     */
+    public addLocalizationKey(containerId: number, key: string, gameText: string, prefixes: string[], texts: string[], suffix: string, context: string, timing: string, actor?: string
+
+    ): Promise<AddedLocalizationSheetKey> {
+        return this.appScripts.sendToAppScript<AddedLocalizationSheetKey>('addLocalizationKey', this.timeout, containerId, key, gameText, prefixes, texts, suffix, context, timing, actor);
     }
 }

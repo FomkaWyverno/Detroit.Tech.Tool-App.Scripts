@@ -16,18 +16,22 @@ import { ValuesInputsState } from "../../../components/InputsContainer/InputsCon
  * }} Два івента для натискання на кнопку додавання в таблицю ключа, та для натискання на кнопку пошуку у таблиці
  */
 function useControlingButtons(
-    localizatinKey: LocalizationKey | null,
-    locKeySheetModel: LocalizationSheetKey | null,
-    inputValues: ValuesInputsState
+    localizatinKey: LocalizationKey | null, 
+    locKeySheetModel: LocalizationSheetKey | null, 
+    inputValues: ValuesInputsState,
+    isVisiblyMessage: boolean,
+    setMessagePopup: (message: string) => void,
+    setVisiblyMessage: (isVisiblyMessage: boolean) => void
 ): {
     onClickAddInSheetButton: () => void
-    onClickSearchButton: () => void 
+    onClickSearchButton: () => void
+
 } {
-    const { onClickAddInSheetButton } = useOnClickAddInSheetButton(localizatinKey, locKeySheetModel, inputValues);
-    const { onClickSearchButton } = useOnClickSearchButton(locKeySheetModel);
+    const { onClickAddInSheetButton } = useOnClickAddInSheetButton(localizatinKey, locKeySheetModel, inputValues, isVisiblyMessage, setMessagePopup, setVisiblyMessage);
+    const { onClickSearchButton } = useOnClickSearchButton(locKeySheetModel, isVisiblyMessage, setMessagePopup, setVisiblyMessage);
     return {
         onClickAddInSheetButton,
-        onClickSearchButton
+        onClickSearchButton,
     }
 }
 

@@ -12,15 +12,15 @@ import * as InputsContainerReducer from "./components/InputsContainer/InputsCont
 import useGlossaryItemHandler from "./hooks/app/useGlossaryItemHandler";
 import MessagePopup from "./components/MessagePopup/MessagePopup";
 
-
-
 export function App() {
     const [keyInfoHeight, setKeyInfoHeight] = useState<string>();
     const [inputsValues, setInputsValues] = useState<InputsContainerReducer.ValuesInputsState>(InputsContainerReducer.defaultReducerValue);
+    const [messagePopup, setMessagePopup] = useState<string>('');
+    const [isVisiblyMessage, setVisiblyMessage] = useState<boolean>(false);
 
     const { youtubeURL, contextValue, timing, youtubeLinkOnChange, handleTimeOnChange, contextOnChange, timingOnChange } = useYoutubeHandler();
     const { codeHandlerState, codeOnChange } = useCodeHandler();
-    const { onClickAddInSheetButton, onClickSearchButton } = useControlingButtons(codeHandlerState.localizationKey, codeHandlerState.localizationSheetKey, inputsValues);
+    const { onClickAddInSheetButton, onClickSearchButton } = useControlingButtons(codeHandlerState.localizationKey, codeHandlerState.localizationSheetKey, inputsValues, isVisiblyMessage, setMessagePopup, setVisiblyMessage);
     const { onClickGlossaryItem, actorOnChange, actor_value } = useGlossaryItemHandler();
 
     const onChangeInputsValue = useCallback((values: InputsContainerReducer.ValuesInputsState) => setInputsValues(values),[]);
@@ -34,7 +34,7 @@ export function App() {
 
     return (
         <GridLayout>
-            <MessagePopup message="error" isVisible={true}/>
+            <MessagePopup message={messagePopup} isVisible={isVisiblyMessage}/>
             <YoutubeVideo videoURL={youtubeURL} handleTimeOnChange={handleTimeOnChange}/>
             <div ref={wrapperKeys}>
                 <Card component_style={{ width: "515px", maxHeight: keyInfoHeight }}>
