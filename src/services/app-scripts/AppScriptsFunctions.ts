@@ -10,7 +10,9 @@ export class AppScriptsFunctions {
     public static readonly implementedFunctions: Array<string> = [
         'listFunctions',
         'getSheetNames',
-        'getValueSheet'
+        'getValueSheet',
+        'showRange',
+        'addLocalizationKey'
     ];
 
     /**
