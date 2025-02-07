@@ -17,21 +17,17 @@ function AppInitializer({
         error, // Повідомлення про помилку
         progress, // Прогресс ініцілізації програми
         locKeyByCode, // Мапа де ключ це код, а значення це ключ локалізації
-        locSheetKeysByIdKey,
     ] = useAppInit();
 
     if (isInitialize) {
         return (
-            
-            <LocSheetKeysContextProvider contextValue={{ locSheetKeysByIdKey: locSheetKeysByIdKey }}>
-                <LocKeyByCodeContextProvider contextValue={{ locKeyByCode: locKeyByCode }}>
-                    {children}
-                </LocKeyByCodeContextProvider>
-            </LocSheetKeysContextProvider>
+            <LocKeyByCodeContextProvider contextValue={{ locKeyByCode: locKeyByCode }}>
+                {children}
+            </LocKeyByCodeContextProvider>
         )
     } else {
         return <LoadingScreen state={state} error_msg={error} progress={progress} />
-    }    
+    }
 }
 
 export default AppInitializer

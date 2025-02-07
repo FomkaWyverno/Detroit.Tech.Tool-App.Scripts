@@ -1,3 +1,4 @@
+import { LocSheetKeysContext } from './../../context/LocSheetKeysContext';
 import { LocalizationKey } from '../../models/localization/LocalizationKey';
 import { useCallback, useContext, useEffect, useState } from "react";
 import useFetch from "../useFetch";
@@ -36,7 +37,6 @@ function useAppInit(): [
     error: string,
     progress: number,
     locKeyByCode: Map<string, LocalizationKey>,
-    locSheetKeysByIdKey: Map<string, LocalizationSheetKey>
 ] {
     const [isInitializeApp, setInitializeApp] = useState<boolean>(false);
     const [state, setState] = useState<string>(STATE.DEFAULT);
@@ -47,9 +47,9 @@ function useAppInit(): [
     const [locData, loading, errorFetch] = useFetch<LocalizationData>(localizationDataURL);
 
     // Оброблені данні таблиці та завантажена локалізація
-    const [locSheetKeys, setLocSheetKeys] = useState<Map<string,LocalizationSheetKey>>(new Map());
-    const [locSheetKeysByIdKey, setLocSheetKeysByIdKey] = useState<Map<string, LocalizationKey>>(new Map()) // Мапа яка має ключ це код, а значення це локалізаційний ключ, з оригінульного файлу
+    const [locKeysByCode, setLocKeysByCode] = useState<Map<string, LocalizationKey>>(new Map()) // Мапа яка має ключ це код, а значення це локалізаційний ключ, з оригінульного файлу
     const { dispatchActorNames } = useContext(ActorNamesContext);  // Контекст який керує Мапою яка має ключ це голосовий ключ, а значення це массив імен для цього ключа, з таблиці
+    const { dispatchLocSheetKeys } = useContext(LocSheetKeysContext);
 
     useEffect(() => {
         if (errorFetch) {
@@ -62,7 +62,7 @@ function useAppInit(): [
         try { // Виклик функції відбувається, лише тоді коли locData не null тому, ми впевнені, що тут все гаразд буде.
             setState(STATE.PROCCESSING_LOC_DATA);
             const keysGroup = groupKeysByCode(locData!);
-            setLocSheetKeysByIdKey(keysGroup);
+            setLocKeysByCode(keysGroup);
 
             setState(STATE.APP_SCRIPTS_INIT);
             // Отримання екземпляра AppScripts
@@ -72,7 +72,7 @@ function useAppInit(): [
             setState(STATE.PROCESS_KEYS); // Оброблюємо дані з таблиці
             
             const keys: LocalizationSheetKey[] = sheets.flatMap(sheet => parseSheetToLocalizationSheetKeys(sheet)); // Парсимо дані в моделі ключів локалізації
-            setLocSheetKeys(groupLocSheetKeyByContainerIdAndKey(keys));
+            dispatchLocSheetKeys( { type: "INIT_LOCALIZATION_KEYS_SHEET", payload: groupLocSheetKeyByContainerIdAndKey(keys)}); // Ініцілізуємо всі ключа в таблиці
             const group = groupByVoiceCode(keys);
             console.log(group); 
             dispatchActorNames({type: "INIT_ACTOR_NAMES", payload: group}); // Ініцілізуємо імена акторів
@@ -84,14 +84,14 @@ function useAppInit(): [
             setState(STATE.ERROR);
             setErrorMsg(e instanceof Error ? e.message : String(e));
         }
-    }, [dispatchActorNames, locData]);
+    }, [dispatchActorNames, dispatchLocSheetKeys, locData]);
 
     useEffect(() => {
         if (!loading && locData && !isInitializeApp) appInit();
 
     }, [loading, locData, isInitializeApp, appInit]);
 
-    return [isInitializeApp, state, error_msg, progress, locSheetKeysByIdKey, locSheetKeys];
+    return [isInitializeApp, state, error_msg, progress, locKeysByCode];
 }
 
 export default useAppInit;

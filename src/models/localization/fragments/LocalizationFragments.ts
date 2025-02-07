@@ -72,7 +72,7 @@ export class LocalizationFragments {
         const currentTag = new Tag(newTag[0], newTag.index, newTag.index + newTag[0].length - 1);
         if (prevTag.endIndex + 1 == currentTag.startIndex && tags.length > 0) { // Якщо попередній тег, закінчується відразу де й починається наступний, тоді додаємо це як один тег.
             tags[tags.length - 1] = new Tag(prevTag.tagStr + currentTag.tagStr, prevTag.startIndex, currentTag.endIndex);
-            return currentTag;
+            return tags[tags.length - 1];
         }
 
         tags.push(currentTag);

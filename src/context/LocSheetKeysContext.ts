@@ -1,9 +1,16 @@
-import { createContext } from "react"
-import { LocalizationSheetKey } from "../models/localization/LocalizationSheetKey"
+import React, { createContext } from "react"
+import { LocSheetKeysAction, LocSheetKeysState } from "./LocSheetKeysContextProvider";
 
 
-export type ILocSheetKeysContext = {
-    locSheetKeysByIdKey: Map<string, LocalizationSheetKey> // Мапа де ключ це рядок `${containerID}.${key}`, а значення це локалізаційний ключ. Як приклад ключа '2348.GUI_MENU_FLOWCHART_MESSAGE' 
+export type ILocSheetKeysContext = LocSheetKeysState & {
+    dispatchLocSheetKeys: React.Dispatch<LocSheetKeysAction>
 }
 
-export const LocSheetKeysContext = createContext<ILocSheetKeysContext>({locSheetKeysByIdKey: new Map()});
+const defaultContextValue: ILocSheetKeysContext = {
+    locSheetKeysByIdKey: new Map(),
+    dispatchLocSheetKeys: () => {
+        throw new Error("dispatchLocSheetKeys called outside of LocSheetKeysContext");
+    }
+}
+
+export const LocSheetKeysContext = createContext<ILocSheetKeysContext>(defaultContextValue);

@@ -63,6 +63,12 @@ describe('LocalizaionFragments', () => {
         expect(fragments.texts).toEqual(['HOW', 'TO GET IN?']);
         expect(fragments.suffix).toEqual('\\n');
     });
+    test('QD Prefixes with img tag', () => {
+        const fragments = new LocalizationFragments("<QD_NORMAL>REWIND <QD_THIN>WITH <img src='BH_L2' height='52' width='52' vspace='-8'/><QD_BR><QD_THIN>TO TRY ANOTHER ROUTE");
+        expect(fragments.prefixes).toEqual(['<QD_NORMAL>', '\\S<QD_THIN>', "\\S<img\\Ssrc='BH_L2'\\Sheight='52'\\Swidth='52'\\Svspace='-8'/><QD_BR><QD_THIN>"]);
+        expect(fragments.texts).toEqual(['REWIND', 'WITH', 'TO TRY ANOTHER ROUTE']);
+        expect(fragments.suffix).toEqual('');
+    });
     test('Empty string', () => {
         const fragments = new LocalizationFragments('');
         expect(fragments.prefixes).toEqual(['']);
