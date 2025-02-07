@@ -12,7 +12,7 @@ import { delay } from '../../utils/Utils';
 import { PromiseUtils } from '../../utils/PromiseUtils';
 import { ActorNamesContext } from '../../context/ActorNamesContex';
 
-const localizationDataURL = 'https://raw.githubusercontent.com/FomkaWyverno/Detroit.Tech.Tool-App.Scripts.github.io/refs/heads/master/Detroit_LocalizationRegistry.json';
+const localizationDataURL = 'https://raw.githubusercontent.com/FomkaWyverno/Detroit.Tech.Tool-App.Scripts/refs/heads/master/Detroit_LocalizationRegistry.json';
 
 const enum STATE {
     DEFAULT = 'Етап-1: Завантаження ключів локалізації... ⏳',
