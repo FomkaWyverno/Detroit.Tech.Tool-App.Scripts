@@ -1,8 +1,8 @@
-import hoverAudioFile from '../assets/sounds/hover.ogg';
-import clickAudioFile from '../assets/sounds/click.ogg';
-import errorAudioFile from '../assets/sounds/error.mp3';
-import error2AudioFile from '../assets/sounds/error2.mp3';
-import popAudioFile from '../assets/sounds/pop.mp3';
+import hoverAudioFile from '../../public/sounds/hover.ogg';
+import clickAudioFile from '../../public/sounds/click.ogg';
+import errorAudioFile from '../../public/sounds/error.mp3';
+import error2AudioFile from '../../public/sounds/error2.mp3';
+import popAudioFile from '../../public/sounds/pop.mp3';
 
 class _SoundManager {
     private clickSound: HTMLAudioElement;
