@@ -2,7 +2,6 @@ import React from 'react'
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
 import useAppInit from '../../hooks/init-app/useAppInit';
 import LocKeyByCodeContextProvider from '../../context/LocKeyByCodeContextProvider';
-import LocSheetKeysContextProvider from '../../context/LocSheetKeysContextProvider';
 
 interface IAppInitializer {
     children: React.ReactNode
