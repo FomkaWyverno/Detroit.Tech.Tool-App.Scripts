@@ -10,6 +10,11 @@ import { LocSheetKeysContext } from "../../../context/LocSheetKeysContext";
 import { ActorNamesContext } from "../../../context/ActorNamesContex";
 import { ActorNamesAction } from "../../../context/ActorNamesContextProvider";
 
+class ValidationException extends Error {
+    constructor(message: string) {
+        super(message);
+    }
+}
 
 interface AddInSheetOptions {
     localizationKey: LocalizationKey | null, // Поточний ключ локалізації
@@ -136,12 +141,12 @@ function updateActorNamesContext(
  */
 function validationInputData(localizationKeySheet: LocalizationSheetKey | null, localizationKey: LocalizationKey | null, inputValues: ValuesInputsState): void {
     if (localizationKeySheet) { // Якщо ключ в таблиці вже присутній
-        SoundManager.playError2(0.05);
-        throw new Error('Локалізаційний ключ вже присутній в таблиці!');
+        SoundManager.playKeyInSheet(0.1);
+        throw new ValidationException('Локалізаційний ключ вже присутній в таблиці!');
     }
     if (!localizationKey) { // Якщо поточний ключ локалізації не існує.
-        SoundManager.playError2(0.05);
-        throw new Error('Не можна додати не існуючий локалізаційний ключ.');
+        SoundManager.playKeyNoExists(0.1);
+        throw new ValidationException('Не можна додати не існуючий локалізаційний ключ.');
     }
     // Перевірка наявності значення контексту
     if (!inputValues.contextValue) throw new Error('Поле контексту порожнє!');
@@ -182,7 +187,7 @@ async function addKeyToSheet(localizatinKey: LocalizationKey, inputValues: Value
  */
 function handleError(error: unknown, isVisiblyMessage: boolean, setMessagePopup: (message: string) => void, setVisiblyMessage: (isVisiblyMessage: boolean) => void): void {
     // Обробка помилок
-    SoundManager.playError2(0.05);
+    if (!(error instanceof ValidationException)) SoundManager.playError2(0.05);
     if (isVisiblyMessage) return;
     setMessagePopup(String(error));
     setVisiblyMessage(true)
