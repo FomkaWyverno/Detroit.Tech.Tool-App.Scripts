@@ -9,6 +9,8 @@ export class Tag {
     }
 
     private escapeChars(string: string): string {
-        return string.replaceAll(' ', '\\S');
+        return string.replaceAll(' ', '\\S')
+                .replaceAll('\n', '\\n')
+                .replaceAll('\r','\\r');
     }
 }

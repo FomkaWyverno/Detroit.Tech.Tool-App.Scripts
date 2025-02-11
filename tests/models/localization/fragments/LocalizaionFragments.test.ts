@@ -69,6 +69,22 @@ describe('LocalizaionFragments', () => {
         expect(fragments.texts).toEqual(['REWIND', 'WITH', 'TO TRY ANOTHER ROUTE']);
         expect(fragments.suffix).toEqual('');
     });
+    test('TV News dialog', () => {
+        const fragments = new LocalizationFragments(
+            "{S}{*1}The first book written by an artificial intelligence has just been published and to call it a success would be an understatement –"+
+            "{B}Do Humans Dream of Mammalian Sheep? has shot to the top of the bestseller list."+
+            "{*2}Moreover, critics are unanimous in their praise for the depth of thought and originality of this first work."+
+            "\r\n{*3}Designed by CyberLife, the AI known as VOLTAIRE analyzed human centers of interest on social networks for several months before its complex algorithms generated the plot of the novel."+
+            "\r\n{*4}According to several specialists, it will be very difficult for human authors to compete with these algorithms and the odds are that most of the books written in the coming years will be the work of artificial intelligence.");
+        expect(fragments.prefixes).toEqual(['{S}{*1}','{B}', '{*2}', '\\r\\n{*3}', '\\r\\n{*4}']);
+        expect(fragments.texts).toEqual([
+            'The first book written by an artificial intelligence has just been published and to call it a success would be an understatement –',
+            'Do Humans Dream of Mammalian Sheep? has shot to the top of the bestseller list.',
+            'Moreover, critics are unanimous in their praise for the depth of thought and originality of this first work.',
+            'Designed by CyberLife, the AI known as VOLTAIRE analyzed human centers of interest on social networks for several months before its complex algorithms generated the plot of the novel.',
+            'According to several specialists, it will be very difficult for human authors to compete with these algorithms and the odds are that most of the books written in the coming years will be the work of artificial intelligence.'
+        ])
+    });
     test('Empty string', () => {
         const fragments = new LocalizationFragments('');
         expect(fragments.prefixes).toEqual(['']);
