@@ -2,7 +2,7 @@ import { LocalizationFragments } from './fragments/LocalizationFragments';
 import { BaseLocalizationKey } from "./BaseLocalizationKey";
 
 export class LocalizationKey extends BaseLocalizationKey { // Локалізаційний текст, який має всю інформацію про ключ, включно з його ключем та контейнером де він знаходиться.
-    private static readonly patternCode = /^!(.+?)! (.+)?/
+    private static readonly patternCode = /^!(.+?)! ([^]*)?/
 
     public readonly text: string;
     public readonly code: string;
@@ -26,7 +26,7 @@ export class LocalizationKey extends BaseLocalizationKey { // Локалізац
         super(containerId, key, hasLink && linkExists);
         const {code, text} = LocalizationKey.unpackOriginalText(ogirinalText); 
         this.code = code;
-        this.text = text;
+        this.text = LocalizationKey.escapeLineBreaks(text);;
         this.fragments = new LocalizationFragments(text);
     }
 
@@ -42,5 +42,9 @@ export class LocalizationKey extends BaseLocalizationKey { // Локалізац
         const matches = LocalizationKey.patternCode.exec(originalText);
         if (matches) return {code: matches[1], text: matches[2] ?? ''};
         throw new Error(`Not found code and text for LocalizationKeyText. Original Text - ${originalText}`);
+    }
+
+    private static escapeLineBreaks(text: string): string {
+        return text.replaceAll('\n', '\\n').replaceAll('\r','\\r');
     }
 }
