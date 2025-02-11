@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import { LocalizationKey } from "../../../models/localization/LocalizationKey";
 import { LocalizationSheetKey } from "../../../models/localization/LocalizationSheetKey";
 import SoundManager from "../../../utils/SoundManager";
@@ -43,11 +43,14 @@ function useOnClickAddInSheetButton({
 }: AddInSheetOptions): {
     onClickAddInSheetButton: () => void, // Повертає функцію для додавання ключа в аркуш
 } {
+    const [isProcessAdding, setProcessAdding] = useState<boolean>(false); // Стан чи зараз відбувається додавання у таблицю чи ні.
     const { dispatchLocSheetKeys } = useContext(LocSheetKeysContext); // Отримуємо dispatch для оновлення контексту аркушів
     const { actorNamesByVoiceKey, dispatchActorNames } = useContext(ActorNamesContext); // Отримуємо dispatch для оновлення глосарію акторів
 
     const onClickAddInSheetButton = useCallback(async () => {
         try {
+            if (isProcessAdding) return; // Якщо вже відбувається додавання ключа в аркуш, не продовжуємо виконання коду
+            setProcessAdding(true); // Ставимо мітко, що зараз відбувається додавання ключа
             console.log(localizationKey); // Логування для перевірки ключа
             validationInputData(localizationKeySheet, localizationKey, inputValues); // Валідація вхідних даних
             const validatedLocalizationKey = localizationKey!; // Підтвердження існування ключа
@@ -64,6 +67,7 @@ function useOnClickAddInSheetButton({
 
             // Відтворення звуку успіху
             SoundManager.playPop(0.3);
+            setProcessAdding(false); // Встановлюємо мітку, що завершили виконання додавання ключа в аркуш
         } catch (e) {
             console.error(e); // Логування помилки
             handleError(e, isVisiblyMessage, setMessagePopup, setVisiblyMessage); // Обробка помилки
@@ -76,6 +80,7 @@ function useOnClickAddInSheetButton({
         isVisiblyMessage,
         localizationKey,
         localizationKeySheet,
+        isProcessAdding
     ]);
 
     return { onClickAddInSheetButton }
