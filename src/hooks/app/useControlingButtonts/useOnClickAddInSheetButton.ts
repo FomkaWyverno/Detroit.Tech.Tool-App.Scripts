@@ -70,6 +70,7 @@ function useOnClickAddInSheetButton({
             setProcessAdding(false); // Встановлюємо мітку, що завершили виконання додавання ключа в аркуш
         } catch (e) {
             console.error(e); // Логування помилки
+            setProcessAdding(false); // Встановлюємо мітку, що завершили виконання додавання ключа в аркуш
             handleError(e, isVisiblyMessage, setMessagePopup, setVisiblyMessage); // Обробка помилки
         }
 
