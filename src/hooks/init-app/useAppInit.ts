@@ -56,7 +56,7 @@ function useAppInit(): [
             setState(STATE.ERROR);
             setErrorMsg(errorFetch);
         }
-    },[errorFetch]);
+    }, [errorFetch]);
 
     const appInit = useCallback(async () => {
         try { // Виклик функції відбувається, лише тоді коли locData не null тому, ми впевнені, що тут все гаразд буде.
@@ -68,14 +68,14 @@ function useAppInit(): [
             // Отримання екземпляра AppScripts
             const appScripts = await AppScripts.getInstance();
             const sheets: Array<Sheet> = await processSheets(appScripts, setState, setProgress); // Оброблюємо таблицю
-    
+
             setState(STATE.PROCESS_KEYS); // Оброблюємо дані з таблиці
-            
+
             const keys: LocalizationSheetKey[] = sheets.flatMap(sheet => parseSheetToLocalizationSheetKeys(sheet)); // Парсимо дані в моделі ключів локалізації
-            dispatchLocSheetKeys( { type: "INIT_LOCALIZATION_KEYS_SHEET", payload: groupLocSheetKeyByContainerIdAndKey(keys)}); // Ініцілізуємо всі ключа в таблиці
+            dispatchLocSheetKeys({ type: "INIT_LOCALIZATION_KEYS_SHEET", payload: groupLocSheetKeyByContainerIdAndKey(keys) }); // Ініцілізуємо всі ключа в таблиці
             const group = groupByVoiceCode(keys);
-            console.log(group); 
-            dispatchActorNames({type: "INIT_ACTOR_NAMES", payload: group}); // Ініцілізуємо імена акторів
+            console.log(group);
+            dispatchActorNames({ type: "INIT_ACTOR_NAMES", payload: group }); // Ініцілізуємо імена акторів
 
             setInitializeApp(true);
         } catch (e) {
@@ -121,16 +121,27 @@ async function processSheets(
     const total = sheetsNames.length;
     let completed = 0;
 
-    const processSheet = async (sheetName: string): Promise<Sheet> => {
+    const processSheet = async (sheetName: string, signal: AbortSignal): Promise<Sheet> => {
+        if (signal.aborted) return null!; // Якщо виникла помилка не починаємо виконувати завдання
+        signal.addEventListener('abort', () => {
+            console.warn(`Aborted task for ${sheetName}`);
+        });
+
         const sheetValue: string[][] = await appScripts.scripts.getValueSheet(sheetName); // Отримуємо значення з таблиці з AppScripts
+
+        if (signal.aborted) return null!; // Перевірка на скасування після отримання значень
         completed++; // Збільшуємо кількість лічильник аркушів з яких отримано вміст
+
+        if (signal.aborted) return null!; // Перевірка перед оновленням стану
         setState(`${STATE.APP_SCRIPTS_SHEET_GET_VALUES} ${completed} з ${total}`); // Встановлюємо стан, для сповіщення користувача, скільки вже опрацьовано аркушів
+        
+        if (signal.aborted) return null!; // Перевірка перед оновленням прогресу
         setProgress(completed / total); // Встановлюємо новий прогресс
-        if (!sheetValue) throw new Error(`Аркуш: "${sheetName}" немає вмісту!`); // Якщо значення не прийшо, сповіщуємо про помилку
+        if (!sheetValue) throw new Error(`Аркуш: "${sheetName}" немає вмісту! (Один з варіантів вирішення. Обрати всі значення Ctrl+A -> Формат -> Число -> Звичайний текст)`); // Якщо значення не прийшо, сповіщуємо про помилку
         return new Sheet(sheetName, sheetValue); // Повертаємо Аркуш.
     }
 
-    const sheets: Sheet[] = await PromiseUtils.allWithLimit<Sheet>(sheetsNames.map(sheetName => () => processSheet(sheetName)), AppScripts.SIMULTANEOUS_CALLS);
+    const sheets: Sheet[] = await PromiseUtils.allWithLimit<Sheet>(sheetsNames.map(sheetName => (signal: AbortSignal) => processSheet(sheetName, signal)), AppScripts.SIMULTANEOUS_CALLS);
 
     await delay(2000);
     // Обнулення прогресу після завершення процесу
